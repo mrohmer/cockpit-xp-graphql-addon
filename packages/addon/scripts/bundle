@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+const convertFilenameToTagName = (name) => {
+    name = name.replace(new RegExp(`\\${path.extname(name)}$`), '');
+    name = name.replace(/-./g, x => x[1].toUpperCase());
+    name = name.replace(/_./g, x => `-${x[1].toUpperCase()}`);
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    return name;
+}
+const getFileContents = (dir) => {
+    try {
+        const files = fs.readdirSync(dir)
+            .filter(file => file.endsWith('.cps'))
+            .filter(file => !file.startsWith('_'));
+        return files.reduce(
+            (prev, file) => ({
+                ...prev,
+                [convertFilenameToTagName(file)]: fs.readFileSync(path.resolve(dir, file)).toString()
+            }),
+            {}
+        );
+    } catch {
+        return [];
+    }
+
+}
+
+const encodeXmlChars = (content) => content
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+const toXmlNode = (tagName, content) => `<${tagName}>${content}</${tagName}>`;
+
+const processEventCode = (code, functions, procedures) => {
+    code = Object.entries(functions).reduce(
+        (prev, [key, value]) => prev.replace(`{%%FUNCTION.${key}%%}`, value),
+        code,
+    );
+    code = Object.entries(procedures).reduce(
+        (prev, [key, value]) => prev.replace(`{%%PROCEDURE.${key}%%}`, value),
+        code,
+    );
+
+    if (/{%%(FUNCTION|PROCEDURE)\.\w+%%}/g.test(code)) {
+        throw new Error('Unresolved function or procedure preprocessor annotation found');
+    }
+
+    return encodeXmlChars(code);
+}
+
+(() => {
+    const functions = getFileContents('src/functions')
+    const procedures = getFileContents('src/procedures');
+    const contents = getFileContents('src');
+    const xmlNodes = Object.entries(contents)
+        .filter(([,value]) => !!value.trim().length)
+        .map(([key, value]) => {
+            try {
+                return toXmlNode(key, processEventCode(value, functions, procedures))
+            } catch (e) {
+                throw new Error(`Error in '${key}': ${e}`);
+            }
+        })
+        .join('\n');
+
+    const rootNode = toXmlNode('AddOnClasses', `\n${xmlNodes}\n`);
+
+    const xml = `<?xml version="1.0" encoding="iso-8859-1"?>\n${rootNode}`;
+
+    if (!fs.existsSync('dist')) {
+        fs.mkdirSync('dist');
+    }
+    fs.writeFileSync('dist/AddOn.cps.xml', xml);
+})();

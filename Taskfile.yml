@@ -1,0 +1,66 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    - task: build:go
+    - task: bundle:cps
+    - task: copy:root
+
+  generate:
+    dir: packages/server
+    cmds:
+      - go generate ./...
+    sources:
+      - internal/pkg/graph/schema.grahqls
+      - internal/pkg/graph/resolver.go
+    generates:
+      - internal/pkg/graph/schema.resolver.go
+      - internal/pkg/graph/generated/generated.go
+      - internal/pkg/graph/model/models_gen.go
+
+  build:go:
+    dir: packages/server
+    deps: [generate]
+    cmds:
+      - go build -o dist/{{.OUTPUT}} cmd/server/server.go
+    sources:
+      - cmd/**
+      - internal/**
+    generates:
+      - dist/server
+  build:go:windows:
+    dir: packages/server
+    cmds:
+      - task: build:go
+        vars: {OUTPUT: "server.exe"}
+        env: {GOOS: "windows"}
+    sources:
+      - cmd/**
+      - internal/**
+    generates:
+      - dist/server.exe
+
+  bundle:cps:
+    dir: packages/addon
+    sources:
+      - src/functions/**
+      - src/procedures/**
+      - src/**
+      - scripts/bundle
+    generates:
+      - dist/AddOn.cps.xml
+    cmds:
+      - scripts/bundle
+
+  copy:root:
+    sources:
+      - packages/*/dist/**
+      - packages/server/default-config.yaml
+    generates:
+      - dist/**
+    cmds:
+      - cp -a packages/addon/dist/. dist/
+      - cp -a packages/server/dist/. dist/
+      - cp -a packages/server/default-config.yaml dist/.wc.yaml

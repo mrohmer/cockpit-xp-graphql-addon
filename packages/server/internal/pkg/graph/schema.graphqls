@@ -1,0 +1,113 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+enum RaceMode {
+  QUALIFYING
+  RACE
+  TRAINING
+}
+enum RaceStatus {
+  RUNNING
+  STOPPED
+  PAUSED
+}
+enum RaceEvent {
+  SESSION_IS_STARTING
+  SESSION_STARTED
+  RACE_STARTING
+  RACE_ENDED_BY_FIRST
+  RACE_ENDED_BY_LAST
+  CHAOS
+  CHAOS_WITH_FOLLOW_UP_TIME
+  SESSION_CANCELED
+}
+
+type RaceStats {
+  completed: Int!
+  won: Int!
+}
+type Driver {
+  id: ID!
+  name: String!
+  car: String!
+  races: RaceStats!
+}
+type Penalty {
+  id: ID!
+  type: String!
+  status: String!
+}
+
+type DistanceToPlayer {
+  time: Int!
+  lap: Int!
+}
+type LapTime {
+  Diff: Int
+  Last: Int
+  Best: Int
+}
+type SectorStat {
+  current: Int
+  record: Int
+}
+type SectorStats {
+  id: ID!
+  time: SectorStat
+  speed: SectorStat
+}
+type Slot {
+  id: ID!
+  driver: Driver!
+  lap: Int!
+  remainingLaps: Int!
+  lapTime: LapTime!
+  speed: Int!
+  fuel: Float!
+  penalties: [Penalty!]
+  distanceToLeader: DistanceToPlayer
+  distanceToNext: DistanceToPlayer
+  isRefueling: Boolean!
+  boxStops: Int!
+  sectorStats: [SectorStats!]
+  lapRecord: Int
+  position: Int!
+}
+
+type Record {
+  driver: Driver
+  value: Int
+}
+type Race {
+  targetLaps: Int!
+  targetTime: Int!
+  running: Boolean!
+  mode: RaceMode
+  status: RaceStatus
+  lastEvent: RaceEvent
+
+  record: Record
+}
+
+type Track {
+  record: Int
+  name: String
+}
+
+type Subscription {
+  race: Race
+  track: Track
+  slots: [Slot!]
+  slot(id: ID!): Slot
+  drivers: [Driver!]
+  driver(id: ID!): Driver
+}
+
+type Query {
+  race: Race
+  track: Track
+  slots: [Slot!]
+  slot(id: ID!): Slot
+  drivers: [Driver!]
+  driver(id: ID!): Driver
+}

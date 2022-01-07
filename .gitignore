@@ -1,0 +1,8 @@
+.idea
+.task
+dist
+
+# dist files
+AddOn.cps.xml
+
+events.txt
