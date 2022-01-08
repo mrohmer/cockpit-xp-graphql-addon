@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: Arduino/actions/setup-taskfile@master
+      - uses: arduino/setup-task@v1
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
@@ -21,7 +21,6 @@ jobs:
       - name: Build project
         run: |
           task generate
-          task build:go
           task build:go:windows
           task bundle:cps
           task copy:root
