@@ -24,7 +24,7 @@ jobs:
           task copy:root
       - name: Zip Assets
         run: |
-          zip "graphql-addon-${{ github.ref }}" --junk-paths dist/* dist/.* README.md
+          zip "dist" --junk-paths dist/* dist/.* README.md
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./graphql-addon-${{ github.ref }}.zip
-          asset_name: graphql-addon-${{ github.ref }}.zip
+          asset_path: ./graphql-addon-test.zip
+          asset_name: dist.zip
           asset_content_type: application/zip
