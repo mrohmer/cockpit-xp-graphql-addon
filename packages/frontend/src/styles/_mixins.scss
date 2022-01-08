@@ -1,0 +1,13 @@
+@mixin darkModeTransition($props...) {
+  $result: ();
+
+  @for $i from 1 through length($props) {
+    $prop: nth($props, $i);
+    $result: append($result, append($prop, 0.2s linear));
+    @if $i != length($props) {
+      $result: append($result, unquote($string: ","));
+    }
+  }
+
+  transition: $result;
+}

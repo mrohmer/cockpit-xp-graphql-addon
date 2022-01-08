@@ -1,0 +1,7 @@
+dist
+.vscode
+.idea
+node_modules
+.aws-sam
+*.html
+cache

@@ -1,0 +1,28 @@
+<div class="icon" (click)="open = !open">
+    <svg class="icon__svg" viewBox="0 0 60 30">
+        <g class="icon-group">
+            <g class="icon--menu">
+                <path d="M 6 0 L 54 0" />
+                <path d="M 6 15 L 54 15" />
+                <path d="M 6 30 L 54 30" />
+            </g>
+            <g class="icon--close">
+                <path d="M 15 0 L 45 30" />
+                <path d="M 15 30 L 45 0" />
+            </g>
+        </g>
+    </svg>
+</div>
+
+<nav class="navigation">
+    <ul>
+        <li><a routerLink="/" (click)="open = false">Home</a></li>
+        <li><a routerLink="/screen" (click)="open = false">Screen</a></li>
+        <li><a routerLink="/help" (click)="open = false">Help</a></li>
+        <li><a routerLink="/settings" (click)="open = false">Settings</a></li>
+    </ul>
+</nav>
+
+<div class="content">
+    <ng-content></ng-content>
+</div>

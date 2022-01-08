@@ -10,6 +10,8 @@
     "url": "m.rohmer.rocks"
   },
   "scripts": {
+    "frontend": "yarn workspace frontend",
+    "ng": "yarn frontend ng",
     "postinstall": "husky install"
   },
   "private": true,
@@ -17,5 +19,8 @@
     "@commitlint/cli": "^16.0.1",
     "@commitlint/config-conventional": "^16.0.0",
     "husky": "^7.0.4"
-  }
+  },
+  "workspaces": [
+    "packages/frontend"
+  ]
 }

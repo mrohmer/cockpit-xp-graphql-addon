@@ -1,0 +1,30 @@
+<form [formGroup]="form">
+  <app-settings-row>
+    <label for="websocket-url" appSettingsHeadline>
+      Websocket-URL
+    </label>
+
+    <input id="websocket-url" type="url" formControlName="websocketUrl" />
+
+    <div *ngIf="form.get('websocketUrl')?.touched && form.hasError('isUrl', 'websocketUrl')">
+      Bitte gib eine valide URL an.
+    </div>
+  </app-settings-row>
+  <app-settings-row *ngIf="wakeLockService.isSupported">
+    <label for="wake-lock" appSettingsHeadline>
+      Bildschirm angeschaltet lassen.
+    </label>
+
+    <input id="wake-lock" type="checkbox" formControlName="wakeLock" />
+  </app-settings-row>
+  <app-settings-row>
+    <label for="dark-mode" appSettingsHeadline>
+      Dark Mode
+    </label>
+
+    <input id="dark-mode" type="checkbox" formControlName="darkMode" />
+  </app-settings-row>
+  <app-settings-row>
+    <button (click)="restoreDefaults()">Auf Standartwerte zurücksetzen</button>
+  </app-settings-row>
+</form>
