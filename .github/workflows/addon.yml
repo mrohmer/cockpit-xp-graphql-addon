@@ -1,7 +1,7 @@
 on: push
   push:
     tags:
-    - 'addon-v*'
+    - 'v*'
 
 name: Release Addon
 
