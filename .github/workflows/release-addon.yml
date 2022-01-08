@@ -18,7 +18,6 @@ jobs:
       - name: Build project
         run: |
           task generate
-          task build:go
           task build:go:windows
           task bundle:cps
           task copy:root

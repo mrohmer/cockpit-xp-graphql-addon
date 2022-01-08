@@ -32,10 +32,11 @@ tasks:
       - dist/server
   build:go:windows:
     dir: packages/server
+    deps: [generate]
     cmds:
-      - task: build:go
-        vars: {OUTPUT: "server.exe"}
-        env: {GOOS: "windows"}
+      - go build -o dist/server.exe cmd/server/server.go
+    env:
+      GOOS: "windows"
     sources:
       - cmd/**
       - internal/**
