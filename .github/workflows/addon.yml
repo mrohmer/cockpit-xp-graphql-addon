@@ -1,0 +1,47 @@
+on: push
+
+name: Release Addon
+
+jobs:
+  build:
+    name: Release Addon
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Arduino/actions/setup-taskfile@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.16.1'
+      - name: Build project # This would actually build your project, using zip for an example artifact
+        run: |
+          task generate
+          task build:go
+          task build:go:windows
+          task bundle:cps
+          task copy:root
+      - name: Zip Assets
+          run: |
+            zip "graphql-addon-${{ github.ref }}" --junk-paths dist/* dist/.* README.md
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Addon Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./graphql-addon-${{ github.ref }}.zip
+          asset_name: graphql-addon-${{ github.ref }}.zip
+          asset_content_type: application/zip
