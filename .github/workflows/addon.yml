@@ -23,8 +23,8 @@ jobs:
           task bundle:cps
           task copy:root
       - name: Zip Assets
-          run: |
-            zip "graphql-addon-${{ github.ref }}" --junk-paths dist/* dist/.* README.md
+        run: |
+          zip "graphql-addon-${{ github.ref }}" --junk-paths dist/* dist/.* README.md
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
