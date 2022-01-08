@@ -1,0 +1,21 @@
+{
+  "name": "graphql-addon",
+  "version": "1.0.0",
+  "description": "GraphQL-Addon for Cockpit-XP",
+  "main": "index.js",
+  "repository": "git@github.com:mrohmer/cockpit-xp-graphql-addon.git",
+  "author": {
+    "name": "Matthias Rohmer",
+    "email": "rohmer.matze@gmail.com",
+    "url": "m.rohmer.rocks"
+  },
+  "scripts": {
+    "postinstall": "husky install"
+  },
+  "private": true,
+  "devDependencies": {
+    "@commitlint/cli": "^16.0.1",
+    "@commitlint/config-conventional": "^16.0.0",
+    "husky": "^7.0.4"
+  }
+}

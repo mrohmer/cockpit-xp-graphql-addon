@@ -6,3 +6,5 @@ dist
 AddOn.cps.xml
 
 events.txt
+
+node_modules
