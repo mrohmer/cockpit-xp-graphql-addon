@@ -26,4 +26,4 @@ Everything needed is then located in `dist` folder.
 - Copy the contents of the `dist` folder to `<cockpit_dir>/AddOn/MRohmer/GraphQL`.
 - Then start the `server.exe` from within this directory. 
 - Enable the AddOn within Cockpit-XP.
-- Launch up your favourite browser & navigate to (localhost:8080)[http://localhost:8080]
+- Launch up your favourite browser & navigate to [localhost:8080](http://localhost:8080)
