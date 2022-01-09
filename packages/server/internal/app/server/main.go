@@ -3,6 +3,8 @@ package server
 import (
 	"errors"
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/extension"
+	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
@@ -16,10 +18,9 @@ import (
 )
 
 type Server struct {
-	port           int
-	resolver       *graph.Resolver
-	allowedOrigins []string
-	debug          bool
+	port     int
+	resolver *graph.Resolver
+	debug    bool
 }
 
 func NewServer(port int) *Server {
@@ -27,10 +28,6 @@ func NewServer(port int) *Server {
 }
 func (s *Server) SetResolver(resolver *graph.Resolver) *Server {
 	s.resolver = resolver
-	return s
-}
-func (s *Server) AddAllowedOrigin(origin string) *Server {
-	s.allowedOrigins = append(s.allowedOrigins, origin)
 	return s
 }
 func (s *Server) DebugMode(debug bool) {
@@ -46,17 +43,22 @@ func (s *Server) Start() error {
 
 	router := chi.NewRouter()
 
-	if len(s.allowedOrigins) > 0 {
-		// Add CORS middleware around every request
-		// See https://github.com/rs/cors for full option listing
-		router.Use(cors.New(cors.Options{
-			AllowedOrigins:   s.allowedOrigins,
-			AllowCredentials: true,
-			Debug:            s.debug,
-		}).Handler)
-	}
+	router.Use(cors.New(cors.Options{
+		Debug: s.debug,
+	}).Handler)
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: s.resolver}))
+	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: s.resolver}))
+	srv.AddTransport(transport.Options{})
+	srv.AddTransport(transport.GET{})
+	srv.AddTransport(transport.POST{})
+	srv.AddTransport(transport.MultipartForm{})
+
+	srv.SetQueryCache(lru.New(1000))
+
+	srv.Use(extension.Introspection{})
+	srv.Use(extension.AutomaticPersistedQuery{
+		Cache: lru.New(100),
+	})
 	srv.AddTransport(&transport.Websocket{
 		Upgrader: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
