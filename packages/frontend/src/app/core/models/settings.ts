@@ -1,5 +1,9 @@
+export interface ServerSettings {
+  host: string;
+  port?: number;
+}
 export interface Settings {
-  websocketUrl: string | undefined;
+  server: ServerSettings;
   wakeLock: boolean;
   darkMode: boolean;
 }

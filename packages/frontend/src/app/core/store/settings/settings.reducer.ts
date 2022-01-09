@@ -2,12 +2,17 @@ import { Action, ActionReducer, createReducer, on } from '@ngrx/store';
 import {
     restoreDefaults, setDarkMode,
     setWakeLock,
-    setWebsocketUrl,
+    setServerSettings,
+    setServerSettingsHost,
+    setServerSettingsPort,
 } from '$core/store/settings/settings.action';
 import { Settings } from '$core/models/settings';
 
 export const initialState: Settings = {
-  websocketUrl: undefined,
+  server: {
+    host: 'localhost',
+    port: 8080,
+  },
   wakeLock: true,
   darkMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 };
@@ -15,10 +20,30 @@ export const initialState: Settings = {
 const _settingsReducer = createReducer(
   initialState,
   on(
-    setWebsocketUrl,
-    (state, { websocketUrl }): Settings => ({
+    setServerSettings,
+    (state, {server}): Settings => ({
       ...state,
-      websocketUrl,
+      server,
+    })
+  ),
+  on(
+    setServerSettingsHost,
+    (state, {host}): Settings => ({
+      ...state,
+      server: {
+        ...(state.server ?? {}),
+        host,
+      },
+    })
+  ),
+  on(
+    setServerSettingsPort,
+    (state, {port}): Settings => ({
+      ...state,
+      server: {
+        ...(state.server ?? {}),
+        port,
+      },
     })
   ),
   on(

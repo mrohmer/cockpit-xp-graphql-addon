@@ -1,0 +1,9 @@
+<div class="slot-selection">
+    <a *ngFor="let slot of slots$|async"
+       [routerLink]="['/screen/', slot.id]"
+       routerLinkActive="screen-link--active"
+       class="screen-link"
+    >
+        {{slot.driver.name}}
+    </a>
+</div>

@@ -4,7 +4,14 @@ import isUrl from 'is-url';
 export class StringValidator {
   static isUrl(schema: string = 'https://'): ValidatorFn {
     return (control) => {
-      let url = control.value?.trim() as string;
+      if (!control.value) {
+        return { isUrl: true };
+      }
+      let url = control.value;
+      if (typeof url !== 'string') {
+        url = String(url);
+      }
+      url = url.trim() as string;
       if (!url) {
         return { isUrl: true };
       }

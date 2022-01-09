@@ -1,22 +1,19 @@
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit,} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {ApplicationState} from '$core/models/state';
+import {filter, map, startWith, takeUntil} from 'rxjs/operators';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Settings} from '$core/models/settings';
+import {combineLatest, merge, Observable, Subject, throwError} from 'rxjs';
 import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { Store } from '@ngrx/store';
-import { ApplicationState } from '$core/models/state';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Settings } from '$core/models/settings';
-import { combineLatest, merge, Observable, Subject, throwError } from 'rxjs';
-import {
-  restoreDefaults, setDarkMode,
+  restoreDefaults,
+  setDarkMode,
+  setServerSettingsHost,
+  setServerSettingsPort,
   setWakeLock,
-  setWebsocketUrl,
 } from '$core/store/settings/settings.action';
-import { StringValidator } from './validators/string.validator';
-import { WakeLockService } from '$core/services/wake-lock.service';
+import {StringValidator} from './validators/string.validator';
+import {WakeLockService} from '$core/services/wake-lock.service';
 
 @Component({
   selector: 'app-settings',
@@ -36,7 +33,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     fb: FormBuilder
   ) {
     this.form = fb.group({
-      websocketUrl: ['', [StringValidator.isUrl('ws://')]],
+      server: fb.group({
+        host: ['', [StringValidator.isUrl('ws://')]],
+        port: ['', [Validators.min(1), Validators.max(65512)]],
+      }),
       wakeLock: [],
       darkMode: [],
     } as Record<keyof Settings, any>);
@@ -46,34 +46,38 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settings$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((settings) =>
-        this.form.patchValue(settings, { emitEvent: false })
+        this.form.patchValue(settings, {emitEvent: false}),
       );
 
     merge(
-      this.connectControlToStore('websocketUrl').pipe(
-        map((websocketUrl) => setWebsocketUrl({ websocketUrl }))
+      this.connectControlToStore<string>('server', 'host').pipe(
+        map((host) => setServerSettingsHost({host}))
       ),
-      this.connectControlToStore('wakeLock').pipe(
-        map((wakeLock) => setWakeLock({ wakeLock }))
+      this.connectControlToStore<number>('server', 'port').pipe(
+        map((port) => setServerSettingsPort({port}))
       ),
-      this.connectControlToStore('darkMode').pipe(
-        map((darkMode) => setDarkMode({ darkMode }))
+      this.connectControlToStore<boolean>('wakeLock').pipe(
+        map((wakeLock) => setWakeLock({wakeLock}))
+      ),
+      this.connectControlToStore<boolean>('darkMode').pipe(
+        map((darkMode) => setDarkMode({darkMode}))
       ),
     )
       .pipe(takeUntil(this.destroyed$))
       .subscribe((action) => this.store.dispatch(action));
   }
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
 
-  private connectControlToStore<K extends keyof Settings, T = Settings[K]>(
-    controlName: K
+  private connectControlToStore<T>(
+    ...controlNames: (string|symbol)[]
   ): Observable<T> {
-    const control = this.form.get(controlName);
+    const control = this.form.get(controlNames.filter(i => !!i).join('.'));
     if (!control) {
-      return throwError(new Error('unknown control'));
+      return throwError(new Error(`unknown control: ${controlNames.filter(i => !!i).join('.')}`));
     }
     return combineLatest([
       control.valueChanges,

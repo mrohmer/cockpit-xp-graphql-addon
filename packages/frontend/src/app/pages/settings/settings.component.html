@@ -1,15 +1,33 @@
 <form [formGroup]="form">
-  <app-settings-row>
-    <label for="websocket-url" appSettingsHeadline>
-      Websocket-URL
-    </label>
+  <ng-container formGroupName="server">
+    <app-settings-row>
+      <label for="server-host" appSettingsHeadline>
+        Server Host
+      </label>
 
-    <input id="websocket-url" type="url" formControlName="websocketUrl" />
+      <input id="server-host" type="url" formControlName="host" placeholder="localhost" />
 
-    <div *ngIf="form.get('websocketUrl')?.touched && form.hasError('isUrl', 'websocketUrl')">
-      Bitte gib eine valide URL an.
-    </div>
-  </app-settings-row>
+      <div *ngIf="form.get('server.host')?.touched && form.hasError('isUrl', 'server.host')">
+        Bitte gib eine valide URL an.
+      </div>
+    </app-settings-row>
+    <app-settings-row>
+      <label for="server-port" appSettingsHeadline>
+        Server Port
+      </label>
+
+      <input id="server-port" type="number" min="1" max="65512" formControlName="port" placeholder="80" />
+
+      <ng-container *ngIf="form.get('server.port')?.touched">
+        <div *ngIf="form.hasError('min', 'server.port')">
+          Bitte gib einen Wert größer 0 ein.
+        </div>
+        <div *ngIf="form.hasError('max', 'server.port')">
+          Bitte gib einen Wert kleiner 65512 ein.
+        </div>
+      </ng-container>
+    </app-settings-row>
+  </ng-container>
   <app-settings-row *ngIf="wakeLockService.isSupported">
     <label for="wake-lock" appSettingsHeadline>
       Bildschirm angeschaltet lassen.

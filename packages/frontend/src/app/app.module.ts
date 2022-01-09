@@ -4,13 +4,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from '$core/core.module';
-import { Action, ActionReducer, State, StoreModule } from '@ngrx/store';
+import {Action, ActionReducer, State, Store, StoreModule} from '@ngrx/store';
 import { settingsReducer } from '$core/store/settings/settings.reducer';
 import {
   localStorageSync,
   rehydrateApplicationState,
 } from 'ngrx-store-localstorage';
 import { STORAGE } from '$core/models/storage';
+import {APOLLO_OPTIONS} from 'apollo-angular';
+import {HttpLink} from 'apollo-angular/http';
+import {ApplicationState} from '$core/models/state';
+import {createApolloLink} from '$core/utils/apollo-link.util';
+import {InMemoryCache} from '@apollo/client/core';
+import {HttpClientModule} from '@angular/common/http';
 
 export function localStorageSyncReducer(
   reducer: ActionReducer<any>
@@ -41,6 +47,7 @@ export function localStorageSyncReducer(
     BrowserModule,
     AppRoutingModule,
     CoreModule,
+    HttpClientModule,
     StoreModule.forRoot(
       { settings: settingsReducer },
       {
@@ -48,7 +55,19 @@ export function localStorageSyncReducer(
       }
     ),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory(httpLink: HttpLink, store: State<ApplicationState>) {
+        console.log(store.value);
+        return {
+          link: createApolloLink(httpLink, store),
+          cache: new InMemoryCache(),
+        };
+      },
+      deps: [HttpLink, State],
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
