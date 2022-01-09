@@ -39,8 +39,7 @@ func exec() error {
 	}
 
 	s := server.NewServer(port).
-		SetResolver(resolver).
-		AddAllowedOrigin("http://localhost:8080")
+		SetResolver(resolver)
 
 	return s.Start()
 }
