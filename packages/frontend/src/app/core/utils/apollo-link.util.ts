@@ -6,6 +6,20 @@ import {State} from '@ngrx/store';
 import {ApplicationState} from '$core/models/state';
 import {split,} from '@apollo/client/core';
 import {WebSocketLink} from '@apollo/client/link/ws';
+import {SubscriptionClient} from 'subscriptions-transport-ws';
+import {BehaviorSubject} from 'rxjs';
+import {distinctUntilChanged} from 'rxjs/operators';
+
+const wsConnectedSubj$ = new BehaviorSubject<boolean>(false);
+const wsErrorSubj$ = new BehaviorSubject<boolean>(false);
+export const wsConnected$ = wsConnectedSubj$
+  .pipe(
+    distinctUntilChanged(),
+  );
+export const wsError$ = wsErrorSubj$
+  .pipe(
+    distinctUntilChanged(),
+  );
 
 export const createApolloLink = (httpLink: HttpLink, store: State<ApplicationState>) => {
   const getUri = (schema: 'ws://' | 'http://') => buildServerUrl(store.value.settings.server, schema);
@@ -13,13 +27,26 @@ export const createApolloLink = (httpLink: HttpLink, store: State<ApplicationSta
     uri: getUri( 'http://'),
   });
 
-  // Create a WebSocket link:
-  const ws = new WebSocketLink({
-    uri: getUri('ws://'),
-    options: {
-      reconnect: true,
-    },
+  const wsClient = new SubscriptionClient(getUri('ws://'), {
+    reconnect: true,
   });
+
+  const handleConnected = () => {
+    wsConnectedSubj$.next(true);
+    wsErrorSubj$.next(false);
+  };
+  wsClient.onConnected(handleConnected);
+  wsClient.onReconnected(handleConnected);
+  wsClient.onDisconnected((...args) => {
+    wsConnectedSubj$.next(false);
+  });
+  wsClient.onError((...args) => {
+    wsConnectedSubj$.next(false);
+    wsErrorSubj$.next(true);
+  });
+
+  // Create a WebSocket link:
+  const ws = new WebSocketLink(wsClient);
 
   // using the ability to split links, you can send data to each link
   // depending on what kind of operation is being sent

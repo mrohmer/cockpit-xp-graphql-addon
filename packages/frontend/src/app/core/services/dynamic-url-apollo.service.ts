@@ -8,7 +8,7 @@ import {ApplicationState} from '$core/models/state';
 import {distinctUntilChanged, map, pairwise, pluck, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
 import {buildServerUrl} from '$core/utils/server-url.util';
 import {QueryRef} from 'apollo-angular/query-ref';
-import {createApolloLink} from '$core/utils/apollo-link.util';
+import {createApolloLink, wsConnected$, wsError$} from '$core/utils/apollo-link.util';
 import {HttpLink} from 'apollo-angular/http';
 
 @Injectable({
@@ -63,5 +63,12 @@ export class DynamicUrlApolloService {
   }
   subscribe<T, V = EmptyObject>(options: SubscriptionOptions<V, T>, extra?: ExtraSubscriptionOptions): Observable<FetchResult<T>> {
     return this.execOnUrlChange((client) => client.subscribe(options, extra));
+  }
+
+  wsIsConnected() {
+    return wsConnected$;
+  }
+  wsHasError() {
+    return wsError$;
   }
 }

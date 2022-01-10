@@ -1,0 +1,27 @@
+.online-badge {
+  $this: &;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  background: #303030;
+  color: white;
+  width: 105px;
+  position: fixed;
+  bottom: 0;
+  right: 10px;
+  z-index: 10000;
+
+  &__dot {
+    $size: 8px;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    background-color: #aa0000;
+    transition: background-color 0.2s ease;
+    margin-right: 5px;
+
+    #{$this}--connected & {
+      background-color: #00aa00;
+    }
+  }
+}

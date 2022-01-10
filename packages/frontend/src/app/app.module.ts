@@ -59,7 +59,6 @@ export function localStorageSyncReducer(
     {
       provide: APOLLO_OPTIONS,
       useFactory(httpLink: HttpLink, store: State<ApplicationState>) {
-        console.log(store.value);
         return {
           link: createApolloLink(httpLink, store),
           cache: new InMemoryCache(),

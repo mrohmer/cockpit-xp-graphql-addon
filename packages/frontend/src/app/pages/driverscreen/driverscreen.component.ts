@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 
 @Component({
   selector: 'app-driverscreen',
@@ -6,8 +7,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   styleUrls: ['./driverscreen.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DriverscreenComponent implements OnInit {
-  constructor() {}
+export class DriverscreenComponent {
+  isConnected$ = this.apollo.wsIsConnected();
+  constructor(private apollo: DynamicUrlApolloService) {}
 
-  ngOnInit(): void {}
 }
