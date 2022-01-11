@@ -19,7 +19,7 @@ begin
 
   if Cockpit.Parameter = 1 then
   begin
-    PenaltyType:='LAP_PUNISCHMENT';
+    PenaltyType:='LAP_PUNISHMENT';
   end
   else if Cockpit.Parameter = 2 then
   begin
