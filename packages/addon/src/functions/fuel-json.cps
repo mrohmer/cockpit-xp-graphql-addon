@@ -4,7 +4,7 @@ var
   i: Integer;
 begin
   str:='';
-  for i := 1 to 8 do
+  for i := 1 to cpCountOfSlots() do
   begin
     Cockpit.Slot := i;
     if Cockpit.FahrerName <> '' then
