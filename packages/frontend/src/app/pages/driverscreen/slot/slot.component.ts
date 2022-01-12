@@ -68,9 +68,9 @@ const SLOT_DETAIL_SUBSCRIPTION = gql`
             lap
             remainingLaps
             lapTime {
-                Best
-                Diff
-                Last
+                best
+                diff
+                last
             }
             penalties {
                 status
