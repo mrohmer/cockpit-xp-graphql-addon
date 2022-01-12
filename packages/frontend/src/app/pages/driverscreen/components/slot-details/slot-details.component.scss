@@ -1,0 +1,122 @@
+:host {
+  display: grid;
+  width: 100%;
+
+  justify-content: space-between;
+  grid-template-columns: 150px auto auto 100px 100px;
+  grid-template-areas:
+    "position name name laps ."
+    "timelabel currenttime besttime besttime ."
+    "sectorlabel sectors sectors sectors sectors"
+    "fuel fuel fuel fuel fuel"
+    "penalties penalties penalties penalties penalties";
+
+  @media (orientation: landscape) {
+    grid-template-columns: 150px auto auto auto auto 100px 100px;
+    grid-template-areas:
+    "position name name laps . . ."
+    "timelabel currenttime besttime sectors sectors sectors sectors"
+    "penalties penalties penalties penalties fuel fuel fuel";
+  }
+}
+.cell {
+  $this: &;
+
+  $fontSizeXL: 40px;
+  $fontSizeL: 30px;
+  $fontSizeM: 25px;
+  $fontSizeS: 12px;
+
+  margin-bottom: 20px;
+  align-self: center;
+
+  &--big-number {
+    text-align: center;
+
+    #{$this}__value {
+      font-size: $fontSizeXL;
+    }
+
+    #{$this}__label {
+      font-size: $fontSizeS;
+      text-transform: uppercase;
+    }
+  }
+  &--time {
+    text-align: center;
+    #{$this}__value {
+      font-size: $fontSizeL;
+    }
+    #{$this}__label {
+      font-size: $fontSizeS;
+      text-transform: uppercase;
+    }
+  }
+  &--time-small, &--text {
+    #{$this}__value {
+      font-size: $fontSizeM;
+    }
+    #{$this}__label {
+      font-size: $fontSizeS;
+      text-transform: uppercase;
+    }
+  }
+
+  &--position {
+    grid-area: position;
+  }
+  &--name {
+    grid-area: name;
+
+    #{$this}__value {
+      font-size: $fontSizeL;
+    }
+  }
+
+  &--laps {
+    grid-area: laps;
+  }
+
+  &--current-time {
+    grid-area: currenttime;
+  }
+
+  &--best-time {
+    grid-area: besttime;
+  }
+
+  &--fuel {
+    grid-area: fuel;
+    #{$this}__percentage-bar {
+      background: #00aa00;
+    }
+  }
+
+  &--sectors {
+    grid-area: sectors;
+  }
+
+  &--penalties {
+    grid-area: penalties;
+  }
+
+  &--timelabel, &--sectorlabel {
+    text-align: right;
+    color: #aaa;
+    text-transform: uppercase;
+  }
+  &--timelabel {
+    grid-area: timelabel;
+  }
+  &--sectorlabel {
+    grid-area: sectorlabel;
+  }
+
+  &__percentage-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+  }
+}

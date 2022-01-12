@@ -7,3 +7,6 @@
         {{slot.driver.name}}
     </a>
 </div>
+
+<app-slot-details *ngIf="slot$|async as slot" [slot]="slot">
+</app-slot-details>

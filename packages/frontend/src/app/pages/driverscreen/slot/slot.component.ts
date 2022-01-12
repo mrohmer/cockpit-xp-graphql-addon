@@ -1,9 +1,12 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {map, pluck, shareReplay} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {map, pluck, shareReplay, switchMap} from 'rxjs/operators';
+import {iif, Observable, of} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
+import {subscribe} from 'graphql';
+import {FetchResult} from '@apollo/client/core';
+import {Slot} from '../models/slot';
 
 @Component({
   selector: 'app-slot',
@@ -23,12 +26,22 @@ export class SlotComponent {
   ;
 
 
-  slotId$ = this.activatedRoute.queryParams
-    .pipe(
-      pluck('slot'),
-    );
+  slot$: Observable<Slot> = this.activatedRoute.params
+  .pipe(
+    pluck('slot'),
+    switchMap(slotId => iif(
+      () => !!slotId,
+      this.apollo.subscribe<{ slot: Slot }>({
+        query: SLOT_DETAIL_SUBSCRIPTION,
+        variables: {slotId},
+      }),
+      of({data: {slot: null}})
+    )),
+    pluck('data'),
+    pluck('slot'),
+  );
 
-    constructor(
+  constructor(
     private apollo: DynamicUrlApolloService,
     private activatedRoute: ActivatedRoute,
   ) {
@@ -45,6 +58,49 @@ const SLOTS_SUBSCRIPTION = gql`
         }
     }
 `;
+const SLOT_DETAIL_SUBSCRIPTION = gql`
+    subscription SlotPosition($slotId: ID!) {
+        slot(id: $slotId) {
+            position
+            driver {
+                name
+            }
+            lap
+            remainingLaps
+            lapTime {
+                Best
+                Diff
+                Last
+            }
+            penalties {
+                status
+                type
+            }
+            boxStops
+            fuel
+            isRefueling
+            distanceToLeader {
+                lap
+                time
+            }
+            distanceToNext {
+                lap
+                time
+            }
+            sectorStats {
+                time {
+                    current
+                    record
+                }
+                speed {
+                    current
+                    record
+                }
+            }
+
+        }
+    }
+`
 
 interface SlotsResponse {
   slots: {
@@ -54,3 +110,4 @@ interface SlotsResponse {
     }
   }[]
 }
+
