@@ -21,9 +21,9 @@ type Driver struct {
 }
 
 type LapTime struct {
-	Diff *int `json:"Diff"`
-	Last *int `json:"Last"`
-	Best *int `json:"Best"`
+	Diff *int `json:"diff"`
+	Last *int `json:"last"`
+	Best *int `json:"best"`
 }
 
 type Penalty struct {

@@ -214,21 +214,21 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Driver.Races(childComplexity), true
 
-	case "LapTime.Best":
+	case "LapTime.best":
 		if e.complexity.LapTime.Best == nil {
 			break
 		}
 
 		return e.complexity.LapTime.Best(childComplexity), true
 
-	case "LapTime.Diff":
+	case "LapTime.diff":
 		if e.complexity.LapTime.Diff == nil {
 			break
 		}
 
 		return e.complexity.LapTime.Diff(childComplexity), true
 
-	case "LapTime.Last":
+	case "LapTime.last":
 		if e.complexity.LapTime.Last == nil {
 			break
 		}
@@ -703,9 +703,9 @@ type DistanceToPlayer {
   lap: Int!
 }
 type LapTime {
-  Diff: Int
-  Last: Int
-  Best: Int
+  diff: Int
+  last: Int
+  best: Int
 }
 type SectorStat {
   current: Int
@@ -1101,7 +1101,7 @@ func (ec *executionContext) _Driver_races(ctx context.Context, field graphql.Col
 	return ec.marshalNRaceStats2ᚖrohmerᚗrocksᚋserverᚋinternalᚋpkgᚋgraphᚋmodelᚐRaceStats(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LapTime_Diff(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _LapTime_diff(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1133,7 +1133,7 @@ func (ec *executionContext) _LapTime_Diff(ctx context.Context, field graphql.Col
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LapTime_Last(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _LapTime_last(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1165,7 +1165,7 @@ func (ec *executionContext) _LapTime_Last(ctx context.Context, field graphql.Col
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LapTime_Best(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _LapTime_best(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -4164,12 +4164,12 @@ func (ec *executionContext) _LapTime(ctx context.Context, sel ast.SelectionSet, 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("LapTime")
-		case "Diff":
-			out.Values[i] = ec._LapTime_Diff(ctx, field, obj)
-		case "Last":
-			out.Values[i] = ec._LapTime_Last(ctx, field, obj)
-		case "Best":
-			out.Values[i] = ec._LapTime_Best(ctx, field, obj)
+		case "diff":
+			out.Values[i] = ec._LapTime_diff(ctx, field, obj)
+		case "last":
+			out.Values[i] = ec._LapTime_last(ctx, field, obj)
+		case "best":
+			out.Values[i] = ec._LapTime_best(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
