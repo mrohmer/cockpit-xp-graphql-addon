@@ -267,6 +267,7 @@ func (u *update) processRegisterDriver(str string) error {
 		Driver:   &d,
 		Fuel:     event.Data.Fuel,
 		Position: event.Data.Position,
+		LapTime:  &model.LapTime{},
 	}
 
 	u.updateDrivers = u.r.SetDrivers(drivers)
