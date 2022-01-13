@@ -6,12 +6,10 @@ import { DataProtectionComponent } from './data-protection/data-protection.compo
 const routes: Routes = [
   {
     path: 'imprint',
-    pathMatch: 'full',
     component: ImprintComponent,
   },
   {
     path: 'data-protection',
-    pathMatch: 'full',
     component: DataProtectionComponent,
   },
 ];
