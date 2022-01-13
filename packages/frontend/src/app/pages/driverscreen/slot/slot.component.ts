@@ -1,9 +1,12 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {pluck, switchMap, tap} from 'rxjs/operators';
-import {iif, Observable, of} from 'rxjs';
+import {filter, pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {iif, Observable, of, Subject} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
+import {WakeLockService} from '$core/services/wake-lock.service';
+import {Store} from '@ngrx/store';
+import {ApplicationState} from '$core/models/state';
 
 @Component({
   selector: 'app-slot',
@@ -11,7 +14,9 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./slot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SlotComponent {
+export class SlotComponent implements OnInit, OnDestroy {
+
+  private destroyed$ = new Subject();
 
   slot$: Observable<Slot> = this.activatedRoute.params
   .pipe(
@@ -32,7 +37,24 @@ export class SlotComponent {
   constructor(
     private apollo: DynamicUrlApolloService,
     private activatedRoute: ActivatedRoute,
+    private wakeLock: WakeLockService,
+    private store: Store<ApplicationState>,
   ) {
+  }
+
+  ngOnInit(): void {
+    this.store.select('settings', 'wakeLock')
+      .pipe(
+        filter((useWakeLock) => useWakeLock && this.wakeLock.isSupported),
+        switchMap(() => this.wakeLock.request()),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe()
+    ;
+  }
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }
 
