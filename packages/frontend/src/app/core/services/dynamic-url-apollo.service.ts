@@ -49,7 +49,7 @@ export class DynamicUrlApolloService {
 
 
   private execOnUrlChange<T>(project: (client: ApolloBase) => Observable<T>): Observable<T> {
-    if (isPlatformBrowser(this.platformId)) {
+    if (!isPlatformBrowser(this.platformId)) {
       return NEVER;
     }
     return this.onUrlChange$

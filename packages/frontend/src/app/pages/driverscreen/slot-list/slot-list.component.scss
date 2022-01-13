@@ -1,3 +1,9 @@
 app-cell {
   cursor: pointer;
+  ::ng-deep .cell-content {
+    align-items: start !important;
+    .cell-content__main {
+      width: 100%;
+    }
+  }
 }
