@@ -5,9 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class TimePipe implements PipeTransform {
 
-  transform(value: number): string|null {
+  transform(value: number): string {
     if (!value) {
-      return null;
+      return '00:00.000';
     }
     const millis = (value % 1000);
     const sec = String(Math.floor(value / 1000) % 60).padStart(2, '0');

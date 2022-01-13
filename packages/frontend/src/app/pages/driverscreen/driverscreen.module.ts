@@ -1,14 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { DriverscreenRoutingModule } from './driverscreen-routing.module';
-import { DriverscreenComponent } from './driverscreen.component';
-import { SlotComponent } from './slot/slot.component';
-import { SlotDetailsComponent } from './components/slot-details/slot-details.component';
-import { TimePipe } from './pipes/time.pipe';
+import {DriverscreenRoutingModule} from './driverscreen-routing.module';
+import {DriverscreenComponent} from './driverscreen.component';
+import {SlotComponent} from './slot/slot.component';
+import {TimePipe} from './pipes/time.pipe';
+import {SlotListComponent} from './slot-list/slot-list.component';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
-  declarations: [DriverscreenComponent, SlotComponent, SlotDetailsComponent, TimePipe],
-  imports: [CommonModule, DriverscreenRoutingModule],
+  declarations: [DriverscreenComponent, SlotComponent, TimePipe, SlotListComponent],
+  imports: [CommonModule, DriverscreenRoutingModule, SharedModule],
 })
 export class DriverscreenModule {}

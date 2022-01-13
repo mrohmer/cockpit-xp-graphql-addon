@@ -1,5 +1,87 @@
-.screen-link {
-  &--active {
-    font-weight: bold;
+.details {
+  display: grid;
+  width: 100%;
+
+  justify-content: space-between;
+  grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
+  grid-template-areas:
+    "laps laps position position gaptoleader gaptoleader gaptoleader gaptoleader"
+    "lasttime lasttime lasttime lasttime lasttime lasttime lasttime lasttime"
+    "besttime besttime besttime besttime besttime besttime besttime besttime"
+    "fuel fuel fuel fuel sectors sectors sectors sectors"
+    "penalties penalties penalties penalties penalties penalties penalties penalties";
+
+  @media (orientation: landscape) {
+    grid-template-areas:
+    "laps laps position position gaptoleader gaptoleader gaptonext gaptonext"
+    "lasttime lasttime lasttime lasttime besttime besttime besttime besttime besttime"
+    "timelabel currenttime besttime sectors sectors sectors sectors"
+    "fuel fuel . . penalties penalties penalties penalties";
+  }
+}
+
+.cell {
+  &--position {
+    grid-area: position;
+  }
+
+  &--laps {
+    grid-area: laps;
+  }
+
+  &--lasttime {
+    grid-area: lasttime;
+  }
+
+  &--besttime {
+    grid-area: besttime;
+  }
+
+  &--fuel {
+    grid-area: fuel;
+  }
+
+  &--sectors {
+    grid-area: sectors;
+  }
+
+  &--penalties {
+    grid-area: penalties;
+  }
+
+  &--gaptoleader {
+    grid-area: gaptoleader;
+  }
+
+  &--gaptonext {
+    grid-area: gaptonext;
+    @media (orientation: portrait) {
+      display: none;
+    }
+  }
+}
+
+.headline {
+  display: flex;
+  padding: 7.5px 55px 7.5px 7.5px;
+  align-items: center;
+  background: #101010;
+  height: 55px;
+
+  &__back {
+    font-size: 40px;
+    line-height: 40px;
+    text-decoration: none;
+    display: block;
+  }
+
+  &__content {
+    flex: 1;
+    text-align: center;
+    font-size: 25px;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DriverscreenComponent } from './driverscreen.component';
 import {SlotComponent} from './slot/slot.component';
+import {SlotListComponent} from './slot-list/slot-list.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: SlotComponent,
+        component: SlotListComponent,
       }
     ],
   },

@@ -1,15 +1,12 @@
 @use "~src/styles/mixins" as m;
 @use "sass:math";
 
-$space: 1rem;
+$space: 5px;
 $color-primary: #002626;
 $color-secondary: #F0F7EE;
 $duration: 1s;
 $nav-duration: math.div($duration, 4);
 $ease: cubic-bezier(0.215, 0.61, 0.355, 1);
-$space: 1rem;
-$font-primary: 'Helvetica', sans-serif;
-$font-heading: 'Merriweather', serif;
 $font-size: 1.125rem;
 $line-height: 1.5;
 
@@ -21,7 +18,7 @@ $line-height: 1.5;
   z-index: 2;
 
   &__svg {
-    $size: calc(1rem + 4vmin);
+    $size: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,7 +78,6 @@ $line-height: 1.5;
 
   ul {
     font-size: 12vmin;
-    font-family: $font-heading;
     width: 100%;
   }
 
@@ -140,15 +136,6 @@ $line-height: 1.5;
         }
       }
     }
-  }
-}
-
-.content {
-  transform: translateX(0);
-  transition: transform #{$nav-duration * 2} $ease;
-
-  :host.open {
-    transform: translateX(10%);
   }
 }
 

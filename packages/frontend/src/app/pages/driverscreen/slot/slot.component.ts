@@ -1,12 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {map, pluck, shareReplay, switchMap} from 'rxjs/operators';
+import {pluck, switchMap} from 'rxjs/operators';
 import {iif, Observable, of} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {subscribe} from 'graphql';
-import {FetchResult} from '@apollo/client/core';
-import {Slot} from '../models/slot';
 
 @Component({
   selector: 'app-slot',
@@ -15,16 +12,6 @@ import {Slot} from '../models/slot';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotComponent {
-  slots$: Observable<SlotsResponse['slots']> = this.apollo
-    .subscribe<SlotsResponse>({
-      query: SLOTS_SUBSCRIPTION,
-    })
-    .pipe(
-      map(r => r.data?.slots ?? []),
-      shareReplay(),
-    )
-  ;
-
 
   slot$: Observable<Slot> = this.activatedRoute.params
   .pipe(
@@ -48,22 +35,13 @@ export class SlotComponent {
   }
 }
 
-const SLOTS_SUBSCRIPTION = gql`
-    subscription Slots {
-        slots {
-            id
-            driver {
-                name
-            }
-        }
-    }
-`;
 const SLOT_DETAIL_SUBSCRIPTION = gql`
     subscription SlotPosition($slotId: ID!) {
         slot(id: $slotId) {
             position
             driver {
                 name
+                car
             }
             lap
             remainingLaps
@@ -101,13 +79,42 @@ const SLOT_DETAIL_SUBSCRIPTION = gql`
         }
     }
 `
-
-interface SlotsResponse {
-  slots: {
-    id: string;
-    driver: {
-      name: string;
-    }
-  }[]
+interface Slot {
+  position: number;
+  driver: {
+    name: string;
+    car: string;
+  };
+  lap: number;
+  remainingLaps: number;
+  lapTime: {
+    Best: number;
+    Diff: number;
+    Last: number;
+  };
+  penalties: {
+    status: string;
+    type: string;
+  }[];
+  boxStops: number;
+  fuel: number;
+  isRefueling: boolean;
+  distanceToLeader: DistanceToPlayer
+  distanceToNext: DistanceToPlayer;
+  sectorStats: {
+    time: SectorStat;
+    speed: SectorStat;
+  }[];
 }
+
+interface DistanceToPlayer {
+  lap: number;
+  time: number;
+}
+
+interface SectorStat {
+  current: number;
+  record: number;
+}
+
 

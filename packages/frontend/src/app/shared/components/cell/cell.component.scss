@@ -1,0 +1,104 @@
+$paddingV: 10px;
+$paddingH: 20px;
+
+
+.cell-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  &__main {
+    font-size: 30px;
+    line-height: 40px;
+
+    ::ng-deep .material-icons {
+      font-size: 80px;
+      opacity: 0.7;
+    }
+  }
+  &__sub-line, &__super-line {
+    font-size: 14px;
+    line-height: 25px;
+    opacity: 0.7;
+    width: 100%;
+
+    ::ng-deep .has-background {
+      display: block;
+      background: #202020;
+      width: calc(100% + #{2 * $paddingH});
+      margin: 0 -#{$paddingH};
+    }
+  }
+}
+::ng-deep .cell__percentage {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: #404040;
+
+  &--warning {
+    background: #7c5440;
+  }
+}
+::ng-deep .cell__badge {
+  position: absolute;
+  height: 30px;
+  display: inline-block;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto 0;
+  background: #40404080;
+  padding: 0 10px;
+  font-size: 20px;
+  line-height: 30px;
+
+  &--warning {
+    background: #7c5440;
+  }
+}
+
+:host {
+  display: block;
+  width: calc(100% - 10px);
+  min-height: 85px;
+  background: #303030;
+  margin: 0 10px 10px 0;
+  padding: $paddingV $paddingH;
+
+  &.cell {
+    &--uppercase {
+      text-transform: uppercase;
+    }
+    &--centered {
+      text-align: center;
+      padding: $paddingV 0;
+
+      ::ng-deep .has-background {
+        width: 100%;
+        margin: 0;
+      }
+      .cell-content {
+        justify-content: center;
+      }
+    }
+    &--big {
+      .cell-content__main {
+        font-size: 50px;
+        line-height: 80px;
+      }
+    }
+    &--blue {
+      background: #0396c6;
+    }
+    &--green {
+      background: #3bbd3d;
+    }
+    &--yellow {
+      background: #fcc22d;
+    }
+  }
+
+}
