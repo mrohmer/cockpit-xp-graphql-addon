@@ -21,7 +21,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/driverscreen",
+            "outputPath": "dist/driverscreen/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -94,6 +94,78 @@
             "styles": ["src/styles.scss"],
             "scripts": []
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/driverscreen/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json",
+            "inlineStyleLanguage": "scss"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "driverscreen:build:development",
+              "serverTarget": "driverscreen:server:development"
+            },
+            "production": {
+              "browserTarget": "driverscreen:build:production",
+              "serverTarget": "driverscreen:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/",
+              "/screen",
+              "/screen/slot",
+              "/screen/slot/1",
+              "/screen/slot/2",
+              "/screen/slot/3",
+              "/screen/slot/4",
+              "/screen/slot/5",
+              "/screen/slot/6",
+              "/screen/slot/7",
+              "/screen/slot/8",
+              "/legal/imprint",
+              "/legal/data-protection",
+              "/settings"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "driverscreen:build:production",
+              "serverTarget": "driverscreen:server:production"
+            },
+            "development": {
+              "browserTarget": "driverscreen:build:development",
+              "serverTarget": "driverscreen:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
