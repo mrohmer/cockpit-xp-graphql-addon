@@ -1,20 +1,19 @@
-import { Action, ActionReducer, createReducer, on } from '@ngrx/store';
+import {ActionReducer, createReducer, on} from '@ngrx/store';
 import {
-    restoreDefaults, setDarkMode,
-    setWakeLock,
-    setServerSettings,
-    setServerSettingsHost,
-    setServerSettingsPort,
+  restoreDefaults,
+  setServerSettings,
+  setServerSettingsHost,
+  setServerSettingsPort,
+  setWakeLock,
 } from '$core/store/settings/settings.action';
-import { Settings } from '$core/models/settings';
+import {Settings} from '$core/models/settings';
 
 export const initialState: Settings = {
   server: {
     host: 'localhost',
     port: 8080,
   },
-  wakeLock: true,
-  darkMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  wakeLock: true
 };
 
 const _settingsReducer = createReducer(
@@ -51,13 +50,6 @@ const _settingsReducer = createReducer(
     (state, { wakeLock }): Settings => ({
       ...state,
       wakeLock,
-    })
-  ),
-  on(
-    setDarkMode,
-    (state, { darkMode }): Settings => ({
-      ...state,
-      darkMode,
     })
   ),
   on(restoreDefaults, () => initialState)

@@ -32,10 +32,7 @@ $line-height: 1.5;
   }
 
   &--menu {
-    stroke: v.$color-primary;
-    .dark :host & {
-      stroke: v.$color-secondary;
-    }
+    stroke: v.$color-secondary;
   }
 
   &--close {

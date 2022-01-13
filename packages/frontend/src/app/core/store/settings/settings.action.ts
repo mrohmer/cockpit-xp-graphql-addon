@@ -17,8 +17,4 @@ export const setWakeLock = createAction(
   '[Settings] Set Wake Lock',
   props<Pick<Settings, 'wakeLock'>>()
 );
-export const setDarkMode = createAction(
-  '[Settings] Set Dark Mode',
-  props<Pick<Settings, 'darkMode'>>()
-);
 export const restoreDefaults = createAction('[Settings] Restore Defaults');

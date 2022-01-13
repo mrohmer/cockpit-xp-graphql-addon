@@ -7,7 +7,6 @@ import {Settings} from '$core/models/settings';
 import {combineLatest, merge, Observable, Subject, throwError} from 'rxjs';
 import {
   restoreDefaults,
-  setDarkMode,
   setServerSettingsHost,
   setServerSettingsPort,
   setWakeLock,
@@ -38,7 +37,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
         port: ['', [Validators.min(1), Validators.max(65512)]],
       }),
       wakeLock: [],
-      darkMode: [],
     } as Record<keyof Settings, any>);
   }
 
@@ -58,9 +56,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
       ),
       this.connectControlToStore<boolean>('wakeLock').pipe(
         map((wakeLock) => setWakeLock({wakeLock}))
-      ),
-      this.connectControlToStore<boolean>('darkMode').pipe(
-        map((darkMode) => setDarkMode({darkMode}))
       ),
     )
       .pipe(takeUntil(this.destroyed$))

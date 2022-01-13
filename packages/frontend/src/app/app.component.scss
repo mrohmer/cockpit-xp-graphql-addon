@@ -3,13 +3,4 @@
 :host {
   display: block;
   min-height: 100%;
-
-  @include m.darkModeTransition(background-color, color);
-
-  &.dark {
-    background-color: #000;
-    color: white;
-  }
-
-
 }

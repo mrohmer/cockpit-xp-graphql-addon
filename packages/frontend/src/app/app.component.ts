@@ -17,8 +17,6 @@ import {takeUntil} from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy {
-  @HostBinding('class.dark') darkMode = false;
-
   private destroyed$ = new Subject();
 
   constructor(
@@ -30,12 +28,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.renderer.listen('window', 'storage', (event) => {
       this.store.dispatch(new Storage(event.key));
     });
-
-    this.store.select('settings', 'darkMode')
-      .pipe(
-        takeUntil(this.destroyed$),
-      )
-      .subscribe(darkMode => this.darkMode = darkMode);
   }
 
   ngOnDestroy(): void {
