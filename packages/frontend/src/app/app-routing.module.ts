@@ -16,11 +16,6 @@ const routes: Routes = [
       import('./pages/legal/legal.module').then((m) => m.LegalModule),
   },
   {
-    path: 'help',
-    loadChildren: () =>
-      import('./pages/help/help.module').then((m) => m.HelpModule),
-  },
-  {
     path: 'settings',
     loadChildren: () =>
       import('./pages/settings/settings.module').then((m) => m.SettingsModule),
@@ -28,8 +23,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    loadChildren: () =>
-      import('./pages/index/index.module').then((m) => m.IndexModule),
+    redirectTo: 'screen'
   },
   {
     path: '**',
