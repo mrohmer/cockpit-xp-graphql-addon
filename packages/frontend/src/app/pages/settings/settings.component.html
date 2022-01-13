@@ -1,7 +1,8 @@
-<form [formGroup]="form">
+<form [formGroup]="form" class="content">
+  <h1>Settings</h1>
   <ng-container formGroupName="server">
-    <app-settings-row>
-      <label for="server-host" appSettingsHeadline>
+    <app-cell [centered]="false">
+      <label for="server-host" appCellSuperLine>
         Server Host
       </label>
 
@@ -10,9 +11,9 @@
       <div *ngIf="form.get('server.host')?.touched && form.hasError('isUrl', 'server.host')">
         Bitte gib eine valide URL an.
       </div>
-    </app-settings-row>
-    <app-settings-row>
-      <label for="server-port" appSettingsHeadline>
+    </app-cell>
+    <app-cell [centered]="false">
+      <label for="server-port" appCellSuperLine>
         Server Port
       </label>
 
@@ -26,23 +27,25 @@
           Bitte gib einen Wert kleiner 65512 ein.
         </div>
       </ng-container>
-    </app-settings-row>
+    </app-cell>
   </ng-container>
-  <app-settings-row *ngIf="wakeLockService.isSupported">
-    <label for="wake-lock" appSettingsHeadline>
+  <app-cell *ngIf="wakeLockService.isSupported" [centered]="false">
+    <label for="wake-lock" appCellSuperLine>
       Bildschirm angeschaltet lassen.
     </label>
 
     <input id="wake-lock" type="checkbox" formControlName="wakeLock" />
-  </app-settings-row>
-  <app-settings-row>
-    <label for="dark-mode" appSettingsHeadline>
+    <label class="checkbox-thumb" for="wake-lock"></label>
+  </app-cell>
+  <app-cell [centered]="false">
+    <label for="dark-mode" appCellSuperLine>
       Dark Mode
     </label>
 
     <input id="dark-mode" type="checkbox" formControlName="darkMode" />
-  </app-settings-row>
-  <app-settings-row>
-    <button (click)="restoreDefaults()">Auf Standartwerte zurücksetzen</button>
-  </app-settings-row>
+    <label class="checkbox-thumb" for="dark-mode"></label>
+  </app-cell>
+  <div>
+    <button class="btn btn--reset" (click)="restoreDefaults()">Auf Standartwerte zurücksetzen</button>
+  </div>
 </form>
