@@ -37,6 +37,14 @@
     <input id="wake-lock" type="checkbox" formControlName="wakeLock" />
     <label class="checkbox-thumb" for="wake-lock"></label>
   </app-cell>
+  <app-cell [centered]="false">
+    <label for="auto-fullscreen" appCellSuperLine>
+      Automatisch in Fullscreen
+    </label>
+
+    <input id="auto-fullscreen" type="checkbox" formControlName="autoFullscreen" />
+    <label class="checkbox-thumb" for="auto-fullscreen"></label>
+  </app-cell>
   <div>
     <button class="btn btn--reset" (click)="restoreDefaults()">Auf Standartwerte zurücksetzen</button>
   </div>

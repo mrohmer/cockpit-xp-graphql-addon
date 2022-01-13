@@ -17,4 +17,8 @@ export const setWakeLock = createAction(
   '[Settings] Set Wake Lock',
   props<Pick<Settings, 'wakeLock'>>()
 );
+export const setAutoFullscreen = createAction(
+  '[Settings] Set Automatic Fullscreen',
+  props<Pick<Settings, 'autoFullscreen'>>()
+);
 export const restoreDefaults = createAction('[Settings] Restore Defaults');

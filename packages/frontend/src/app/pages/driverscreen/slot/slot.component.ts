@@ -1,12 +1,13 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
 import {filter, pluck, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {iif, Observable, of, Subject} from 'rxjs';
+import {defer, iif, Observable, of, Subject} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {WakeLockService} from '$core/services/wake-lock.service';
 import {Store} from '@ngrx/store';
 import {ApplicationState} from '$core/models/state';
+import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 
 @Component({
   selector: 'app-slot',
@@ -39,6 +40,8 @@ export class SlotComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private wakeLock: WakeLockService,
     private store: Store<ApplicationState>,
+    @Inject(PLATFORM_ID) private platformId: any,
+    @Inject(DOCUMENT) private document: Document,
   ) {
   }
 
@@ -51,6 +54,21 @@ export class SlotComponent implements OnInit, OnDestroy {
       )
       .subscribe()
     ;
+    this.store.select('settings', 'autoFullscreen')
+      .pipe(
+        filter(() => isPlatformBrowser(this.platformId)),
+        switchMap((autoFullscreen) => iif(
+          () => autoFullscreen,
+          defer(() => this.document.body.requestFullscreen()),
+          defer(() => this.document.exitFullscreen()),
+        )),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe(
+        () => undefined,
+        () => undefined,
+        () => this.document.exitFullscreen(),
+      )
   }
   ngOnDestroy(): void {
     this.destroyed$.next();

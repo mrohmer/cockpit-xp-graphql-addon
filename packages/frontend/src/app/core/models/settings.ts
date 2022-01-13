@@ -5,4 +5,5 @@ export interface ServerSettings {
 export interface Settings {
   server: ServerSettings;
   wakeLock: boolean;
+  autoFullscreen: boolean;
 }

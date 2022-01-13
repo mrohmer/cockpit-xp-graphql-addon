@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Settings} from '$core/models/settings';
 import {combineLatest, merge, Observable, Subject, throwError} from 'rxjs';
 import {
-  restoreDefaults,
+  restoreDefaults, setAutoFullscreen,
   setServerSettingsHost,
   setServerSettingsPort,
   setWakeLock,
@@ -37,6 +37,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         port: ['', [Validators.min(1), Validators.max(65512)]],
       }),
       wakeLock: [],
+      autoFullscreen: [],
     } as Record<keyof Settings, any>);
   }
 
@@ -56,6 +57,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
       ),
       this.connectControlToStore<boolean>('wakeLock').pipe(
         map((wakeLock) => setWakeLock({wakeLock}))
+      ),
+      this.connectControlToStore<boolean>('autoFullscreen').pipe(
+        map((autoFullscreen) => setAutoFullscreen({autoFullscreen}))
       ),
     )
       .pipe(takeUntil(this.destroyed$))

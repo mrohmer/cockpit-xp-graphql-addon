@@ -1,6 +1,6 @@
 import {ActionReducer, createReducer, on} from '@ngrx/store';
 import {
-  restoreDefaults,
+  restoreDefaults, setAutoFullscreen,
   setServerSettings,
   setServerSettingsHost,
   setServerSettingsPort,
@@ -13,7 +13,8 @@ export const initialState: Settings = {
     host: 'localhost',
     port: 8080,
   },
-  wakeLock: true
+  wakeLock: true,
+  autoFullscreen: true,
 };
 
 const _settingsReducer = createReducer(
@@ -50,6 +51,13 @@ const _settingsReducer = createReducer(
     (state, { wakeLock }): Settings => ({
       ...state,
       wakeLock,
+    })
+  ),
+  on(
+    setAutoFullscreen,
+    (state, { autoFullscreen }): Settings => ({
+      ...state,
+      autoFullscreen,
     })
   ),
   on(restoreDefaults, () => initialState)
