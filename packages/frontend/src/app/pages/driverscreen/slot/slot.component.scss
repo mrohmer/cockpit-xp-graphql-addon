@@ -55,8 +55,9 @@
 
   &--gaptonext {
     grid-area: gaptonext;
-    @media (orientation: portrait) {
-      display: none;
+    display: none;
+    @media (orientation: landscape) {
+      display: block;
     }
   }
 }

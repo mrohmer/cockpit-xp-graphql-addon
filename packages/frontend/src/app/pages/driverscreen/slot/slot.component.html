@@ -10,7 +10,7 @@
     <div class="details" *ngIf="slot$|async as slot">
         <app-cell class="cell--laps" [centered]="true">
             <span appCellSuperLine>Laps</span>
-            {{slot.lap}}
+            {{slot.lap}} / {{slot.lap + slot.remainingLaps}}
         </app-cell>
         <app-cell class="cell--position" [centered]="true">
             <span appCellSuperLine>Position</span>
@@ -35,17 +35,17 @@
             </span>
         </app-cell>
         <app-cell class="cell--lasttime" color="blue" [centered]="true" [big]="true">
-            {{slot.lapTime.Last|time}}
+            {{slot.lapTime.last|time}}
             <div appCellBadge>last</div>
         </app-cell>
         <app-cell class="cell--besttime" color="green" [centered]="true" [big]="true">
-            {{slot.lapTime.Best|time}}
+            {{slot.lapTime.best|time}}
             <div appCellBadge>Best</div>
         </app-cell>
         <app-cell class="cell--fuel" [centered]="true">
             <div [appCellPercentage]="slot.fuel" [warning]="slot.fuel <= 20"></div>
             <span class="material-icons" [style.color]="slot.isRefueling ? '#3bbd3d' : null">local_gas_station</span>
-            <span appCellSubLine [hasBackground]="true">{{slot.fuel}}%</span>
+            <span appCellSubLine [hasBackground]="true">{{slot.fuel.toFixed(0)}}%</span>
         </app-cell>
         <app-cell class="cell--penalties" [centered]="true">
             <div *ngFor="let penalty of slot.penalties">

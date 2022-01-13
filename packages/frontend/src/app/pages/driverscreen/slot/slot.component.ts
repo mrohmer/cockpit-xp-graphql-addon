@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {pluck, switchMap} from 'rxjs/operators';
+import {pluck, switchMap, tap} from 'rxjs/operators';
 import {iif, Observable, of} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 
@@ -24,6 +24,7 @@ export class SlotComponent {
       }),
       of({data: {slot: null}})
     )),
+    tap(console.log),
     pluck('data'),
     pluck('slot'),
   );
@@ -47,7 +48,6 @@ const SLOT_DETAIL_SUBSCRIPTION = gql`
             remainingLaps
             lapTime {
                 best
-                diff
                 last
             }
             penalties {
@@ -88,9 +88,8 @@ interface Slot {
   lap: number;
   remainingLaps: number;
   lapTime: {
-    Best: number;
-    Diff: number;
-    Last: number;
+    best: number;
+    last: number;
   };
   penalties: {
     status: string;
