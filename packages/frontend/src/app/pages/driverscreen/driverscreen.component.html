@@ -1,0 +1,14 @@
+<router-outlet></router-outlet>
+<div class="online-badge"
+     [class.online-badge--connected]="isConnected$|async"
+>
+    <div class="online-badge__dot"></div>
+    <div class="online-badge__label">
+        <ng-container *ngIf="isConnected$|async; else notConnectedTempl">
+            Verbunden
+        </ng-container>
+        <ng-template #notConnectedTempl>
+            Getrennt
+        </ng-template>
+    </div>
+</div>

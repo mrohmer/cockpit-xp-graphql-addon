@@ -1,0 +1,10 @@
+<div class="content">
+    <h1>Fahrer</h1>
+    <app-cell *ngFor="let slot of slots$|async"
+              [routerLink]="['/screen/', slot.id]"
+              routerLinkActive="screen-link--active"
+              class="screen-link">
+        {{slot.driver.name}}
+        <span *ngIf="slot.driver.car" appCellSubLine>{{slot.driver.car}}</span>
+    </app-cell>
+</div>

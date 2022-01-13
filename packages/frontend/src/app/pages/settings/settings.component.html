@@ -1,0 +1,51 @@
+<form [formGroup]="form" class="content">
+  <h1>Settings</h1>
+  <ng-container formGroupName="server">
+    <app-cell [centered]="false">
+      <label for="server-host" appCellSuperLine>
+        Server Host
+      </label>
+
+      <input id="server-host" type="url" formControlName="host" placeholder="localhost" />
+
+      <div *ngIf="form.get('server.host')?.touched && form.hasError('isUrl', 'server.host')">
+        Bitte gib eine valide URL an.
+      </div>
+    </app-cell>
+    <app-cell [centered]="false">
+      <label for="server-port" appCellSuperLine>
+        Server Port
+      </label>
+
+      <input id="server-port" type="number" min="1" max="65512" formControlName="port" placeholder="80" />
+
+      <ng-container *ngIf="form.get('server.port')?.touched">
+        <div *ngIf="form.hasError('min', 'server.port')">
+          Bitte gib einen Wert größer 0 ein.
+        </div>
+        <div *ngIf="form.hasError('max', 'server.port')">
+          Bitte gib einen Wert kleiner 65512 ein.
+        </div>
+      </ng-container>
+    </app-cell>
+  </ng-container>
+  <app-cell *ngIf="wakeLockService.isSupported" [centered]="false">
+    <label for="wake-lock" appCellSuperLine>
+      Bildschirm angeschaltet lassen.
+    </label>
+
+    <input id="wake-lock" type="checkbox" formControlName="wakeLock" />
+    <label class="checkbox-thumb" for="wake-lock"></label>
+  </app-cell>
+  <app-cell [centered]="false">
+    <label for="auto-fullscreen" appCellSuperLine>
+      Automatisch in Fullscreen
+    </label>
+
+    <input id="auto-fullscreen" type="checkbox" formControlName="autoFullscreen" />
+    <label class="checkbox-thumb" for="auto-fullscreen"></label>
+  </app-cell>
+  <div>
+    <button class="btn btn--reset" (click)="restoreDefaults()">Auf Standartwerte zurücksetzen</button>
+  </div>
+</form>

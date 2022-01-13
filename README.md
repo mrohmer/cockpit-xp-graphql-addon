@@ -4,9 +4,10 @@ Extending Cockpit-XP by a GraphQL-api.
 
 ## project structure
 
-This is a monorepo containing 2 separate applications:
+This is a monorepo containing 3 separate applications:
 - the addon: `packages/addon`
 - the server: `packages/server`
+- the frontend: `packages/frontend`
 
 ## build
 

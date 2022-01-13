@@ -1,0 +1,6 @@
+@use "~src/styles/mixins" as m;
+
+:host {
+  display: block;
+  min-height: 100%;
+}

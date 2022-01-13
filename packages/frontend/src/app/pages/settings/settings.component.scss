@@ -1,0 +1,70 @@
+@use "~src/styles/variables" as v;
+
+::ng-deep .cell-content {
+  align-items: start !important;
+  .cell-content__main {
+    width: 100%;
+  }
+}
+
+input {
+  &[type="number"], &[type="text"], &[type="url"] {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    background: #30303022;
+    border: 1px solid #808080;
+    padding: 10px 20px;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  &[type="checkbox"] {
+    display: none;
+
+    + label.checkbox-thumb {
+      $height: 50px;
+      cursor: pointer;
+      text-indent: -9999px;
+      width: $height * 2;
+      height: $height;
+      background: grey;
+      display: block;
+      border-radius: 100px;
+      position: relative;
+      transition: background-color 0.3s linear;
+      margin-top: 10px;
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: $height - 10px;
+        height: $height - 10px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s linear, left 0.3s linear;
+      }
+    }
+
+    &:checked + label.checkbox-thumb {
+      background: v.$color-primary;
+
+      &:after {
+        left: calc(100% - 5px);
+        transform: translateX(-100%);
+      }
+    }
+  }
+}
+
+.btn {
+  font-size: 25px;
+  width: calc(100% - 10px);
+  background: #002626;
+  color: inherit;
+  padding: 20px;
+  border: none;
+  cursor: pointer;
+}

@@ -1,0 +1,81 @@
+<div class="content headline" *ngIf="slot$|async as slot">
+    <a routerLink=".." class="material-icons headline__back">
+        chevron_left
+    </a>
+    <div class="headline__content">
+        {{slot.driver.name}} <ng-container *ngIf="slot.driver.car">- {{slot.driver.car}}</ng-container>
+    </div>
+</div>
+<div class="content">
+    <div class="details" *ngIf="slot$|async as slot">
+        <app-cell class="cell--laps" [centered]="true">
+            <span appCellSuperLine>Laps</span>
+            {{slot.lap}} / {{slot.lap + slot.remainingLaps}}
+        </app-cell>
+        <app-cell class="cell--position" [centered]="true">
+            <span appCellSuperLine>Position</span>
+            {{slot.position}}
+        </app-cell>
+        <app-cell class="cell--gaptoleader" [centered]="true">
+            <span appCellSuperLine>Gap to Leader</span>
+            <ng-container *ngIf="slot.position !== 1">
+                {{slot.distanceToLeader?.lap ?? '🤷'}}
+            </ng-container>
+            <span *ngIf="slot.position === 1" class="material-icons" style="font-size: 30px; line-height: 40px; color: #fcc22d">
+                star
+            </span>
+        </app-cell>
+        <app-cell class="cell--gaptonext" [centered]="true">
+            <span appCellSuperLine>Gap to Next</span>
+            <ng-container *ngIf="slot.position !== 1">
+                {{slot.distanceToNext?.lap ?? '🤷'}}
+            </ng-container>
+            <span *ngIf="slot.position === 1" class="material-icons" style="font-size: 30px; line-height: 40px; color: #fcc22d">
+                star
+            </span>
+        </app-cell>
+        <app-cell class="cell--lasttime" color="blue" [centered]="true" [big]="true">
+            {{slot.lapTime.last|time}}
+            <div appCellBadge>last</div>
+        </app-cell>
+        <app-cell class="cell--besttime" color="green" [centered]="true" [big]="true">
+            {{slot.lapTime.best|time}}
+            <div appCellBadge>Best</div>
+        </app-cell>
+        <app-cell class="cell--fuel" [centered]="true">
+            <div [appCellPercentage]="slot.fuel" [warning]="slot.fuel <= 20"></div>
+            <span class="material-icons" [style.color]="slot.isRefueling ? '#3bbd3d' : null">local_gas_station</span>
+            <span appCellSubLine [hasBackground]="true">{{slot.fuel.toFixed(0)}}%</span>
+        </app-cell>
+        <app-cell class="cell--penalties" [centered]="true">
+            <div *ngFor="let penalty of slot.penalties">
+                <ng-container [ngSwitch]="penalty">
+                    <ng-container *ngSwitchCase="'LAP_PUNISHMENT'">
+                        Rundenstrafe
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'TIME_PUNISHMENT'">
+                        Zeitstrafe
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'PIT_LANE_PUNISHMENT'">
+                        Boxenstrafe
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        Unbekannte Strafe
+                    </ng-container>
+                </ng-container>
+            </div>
+            <div *ngIf="!slot.penalties?.length">
+                Keine Strafen
+            </div>
+        </app-cell>
+        <app-cell class="cell--sectors" [centered]="!slot.sectorStats?.length">
+            <div *ngIf="!slot.sectorStats?.length">
+                Keine Sektorzeiten
+            </div>
+            <div appCellSubLine style="display: flex">
+                <div *ngFor="let sector of slot.sectorStats; let i = index">
+                    S{{i+1}}: <span>{{sector.time.current|time}}</span> / <span style="color: #3bbd3d">{{sector.time.record|time}}</span>
+                </div>
+            </div>
+        </app-cell>
+</div>

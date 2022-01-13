@@ -1,0 +1,14 @@
+<ng-content select="[appCellPercentage]"></ng-content>
+<ng-content select="[appCellBadge]"></ng-content>
+<div class="cell-content">
+    <div class="cell-content__super-line">
+        <ng-content select="[appCellSuperLine]"></ng-content>
+    </div>
+    <div class="cell-content__main">
+        <ng-content></ng-content>
+    </div>
+    <div class="cell-content__sub-line">
+        <ng-content select="[appCellSubLine]"></ng-content>
+    </div>
+
+</div>
