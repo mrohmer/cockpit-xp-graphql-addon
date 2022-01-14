@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"path/filepath"
 	"rohmer.rocks/server/internal/app/file_source"
@@ -9,6 +10,7 @@ import (
 	"rohmer.rocks/server/internal/pkg/config"
 	"rohmer.rocks/server/internal/pkg/fs"
 	"rohmer.rocks/server/internal/pkg/graph"
+	"time"
 )
 
 const defaultPort = 8080
@@ -32,16 +34,35 @@ func exec() error {
 	}
 
 	source := file_source.NewSource(srcFilePath, resolver)
-	err = source.Start()
-	defer source.Stop()
+
+	startServer, err := server.
+		NewServer(port).
+		SetResolver(resolver).
+		GetStartable()
 	if err != nil {
 		return err
 	}
 
-	s := server.NewServer(port).
-		SetResolver(resolver)
+	recoverer(func() {
+		source.Start()
+		defer source.Stop()
 
-	return s.Start()
+		shutdown := startServer()
+		defer shutdown()
+
+	})
+	return nil
+}
+
+func recoverer(f func()) {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			time.Sleep(5 * time.Second)
+			go recoverer(f)
+		}
+	}()
+	f()
 }
 
 func getSrcFilePath() (string, error) {

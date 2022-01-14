@@ -25,7 +25,7 @@ func NewSource(path string, resolver *graph.Resolver) *FileSource {
 	}
 }
 
-func (f *FileSource) Start() error {
+func (f *FileSource) Start() {
 	f.Stop()
 	go func(source *FileSource) {
 		for {
@@ -40,8 +40,6 @@ func (f *FileSource) Start() error {
 			time.Sleep(time.Millisecond * 100)
 		}
 	}(f)
-
-	return nil
 }
 func (f *FileSource) Stop() {
 	if f.w == nil {

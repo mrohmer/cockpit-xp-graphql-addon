@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"errors"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -34,53 +35,72 @@ func (s *Server) SetResolver(resolver *graph.Resolver) *Server {
 func (s *Server) DebugMode(debug bool) {
 	s.debug = debug
 }
-func (s *Server) Start() error {
+func (s *Server) GetStartable() (func() func(), error) {
 	if s.port == 0 {
-		return errors.New("port not set")
+		return nil, errors.New("port not set")
 	}
 	if s.resolver == nil {
-		return errors.New("resolver not set")
+		return nil, errors.New("resolver not set")
 	}
 
-	router := chi.NewRouter()
+	startableServer := &Server{
+		port:     s.port,
+		resolver: s.resolver,
+		debug:    s.debug,
+	}
+	startable := func() func() {
+		router := chi.NewRouter()
 
-	router.Use(cors.New(cors.Options{
-		Debug: s.debug,
-	}).Handler)
+		router.Use(cors.New(cors.Options{
+			Debug: startableServer.debug,
+		}).Handler)
 
-	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: s.resolver}))
-	srv.AddTransport(transport.Options{})
-	srv.AddTransport(transport.GET{})
-	srv.AddTransport(transport.POST{})
-	srv.AddTransport(transport.MultipartForm{})
+		srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: startableServer.resolver}))
+		srv.AddTransport(transport.Options{})
+		srv.AddTransport(transport.GET{})
+		srv.AddTransport(transport.POST{})
+		srv.AddTransport(transport.MultipartForm{})
 
-	srv.SetQueryCache(lru.New(1000))
+		srv.SetQueryCache(lru.New(1000))
 
-	srv.Use(extension.Introspection{})
-	srv.Use(extension.AutomaticPersistedQuery{
-		Cache: lru.New(100),
-	})
-	srv.AddTransport(&transport.Websocket{
-		Upgrader: websocket.Upgrader{
-			CheckOrigin: func(r *http.Request) bool {
-				// Check against your desired domains here
-				return true
+		srv.Use(extension.Introspection{})
+		srv.Use(extension.AutomaticPersistedQuery{
+			Cache: lru.New(100),
+		})
+		srv.AddTransport(&transport.Websocket{
+			Upgrader: websocket.Upgrader{
+				CheckOrigin: func(r *http.Request) bool {
+					// Check against your desired domains here
+					return true
+				},
+				ReadBufferSize:  1024,
+				WriteBufferSize: 1024,
 			},
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-		},
-	})
+		})
 
-	fs := http.FileServer(http.Dir("public"))
+		fs := http.FileServer(http.Dir("public"))
 
-	router.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", srv)
-	router.Handle("/*", fs)
+		router.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
+		router.Handle("/query", srv)
+		router.Handle("/*", fs)
 
-	log.Printf("go to http://localhost:%d/playground for GraphQL playground\n\nopen http://%s:%d on any device in your network to view the ui\n\n", s.port, getOutboundIP(), s.port)
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(s.port), router))
+		log.Printf(
+			"go to http://localhost:%d/playground for GraphQL playground\n\nopen http://%s:%d on any device in your network to view the ui\n\n",
+			startableServer.port,
+			getOutboundIP(),
+			startableServer.port,
+		)
 
-	return nil
+		httpSrv := &http.Server{Addr: ":" + strconv.Itoa(startableServer.port)}
+		http.Handle("/", router)
+		log.Fatal(httpSrv.ListenAndServe())
+
+		return func() {
+			httpSrv.Shutdown(context.TODO())
+		}
+	}
+
+	return startable, nil
 }
 
 func getOutboundIP() net.IP {
