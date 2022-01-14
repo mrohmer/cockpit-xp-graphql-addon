@@ -525,10 +525,12 @@ func (u *update) processTopSpeedStoppEvent(str string) error {
 		return nil
 	}
 
-	for i := 0; i < event.Data.Station-len(slot.SectorStats); i++ {
-		slot.SectorStats = append(slot.SectorStats, nil)
+	for i := 0; i <= event.Data.Station-len(slot.SectorStats); i++ {
+		slot.SectorStats = append(slot.SectorStats, &model.SectorStats{
+			ID: strconv.Itoa(i + 1),
+		})
 	}
-	slot.SectorStats[event.Data.Station] = &model.SectorStats{
+	slot.SectorStats[event.Data.Station-1] = &model.SectorStats{
 		ID: strconv.Itoa(event.Data.Station),
 		Time: &model.SectorStat{
 			Current: &event.Data.Time.Current,

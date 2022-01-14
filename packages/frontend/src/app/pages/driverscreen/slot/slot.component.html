@@ -79,9 +79,12 @@
             <div *ngIf="!slot.sectorStats?.length">
                 Keine Sektorzeiten
             </div>
-            <div appCellSubLine style="display: flex">
-                <div *ngFor="let sector of slot.sectorStats; let i = index">
-                    S{{i+1}}: <span>{{sector.time.current|time}}</span> / <span style="color: #3bbd3d">{{sector.time.record|time}}</span>
+            <div appCellSubLine>
+                <div *ngFor="let sector of slot.sectorStats"
+                     [style.font-size.px]="slot.sectorStats?.length && slot.sectorStats.length < 4 ? 30 : 25"
+                     [style.line-height.px]="slot.sectorStats?.length && slot.sectorStats.length < 4 ? 30 : 25"
+                     [class.sectors-two-columns]="slot.sectorStats?.length && slot.sectorStats.length > 3">
+                    S{{sector.id}}: <span>{{sector.time.current|time}}</span> / <span style="color: #3bbd3d">{{sector.time.record|time}}</span>
                 </div>
             </div>
         </app-cell>

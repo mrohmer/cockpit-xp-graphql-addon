@@ -130,3 +130,10 @@
     white-space: nowrap;
   }
 }
+
+.sectors-two-columns {
+  display: inline-block;
+  vertical-align: top;
+  width: calc(50% - 15px);
+  margin-right: 10px;
+}

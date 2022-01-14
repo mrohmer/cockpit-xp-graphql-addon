@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {filter, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import {combineLatest, defer, fromEvent, iif, merge, Observable, of, Subject} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {WakeLockService} from '$core/services/wake-lock.service';
@@ -31,7 +31,11 @@ export class SlotComponent implements OnInit, OnDestroy {
         of({data: {slot: null}})
       )),
       pluck('data'),
-      pluck('slot'),
+      pluck<unknown, Slot>('slot'),
+      map(slot => !!slot ? ({
+        ...slot,
+        sectorStats: prepareSectorStats(slot.sectorStats)
+      }) : slot),
     );
 
   constructor(
@@ -59,7 +63,6 @@ export class SlotComponent implements OnInit, OnDestroy {
         merge(
           fromEvent(this.document, 'visibilitychange'),
           fromEvent(window, 'focus'),
-
         ).pipe(
           startWith(true),
         ),
@@ -85,6 +88,41 @@ export class SlotComponent implements OnInit, OnDestroy {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
+}
+
+const prepareSectorStats = (stats: SectorStats[]): SectorStats[] => {
+  stats = stats ?? [];
+  stats = stats.filter(
+    stat => !!stat?.time?.current,
+  );
+  stats.sort((a, b) => a.id.localeCompare(b.id))
+
+  if (stats.length > 3) {
+    const firstHalf = stats.filter((_, index) => index + 1 <= Math.ceil(stats.length / 2));
+    const secondHalf = stats.filter((_, index) => index + 1 > Math.ceil(stats.length / 2));
+
+    stats = firstHalf
+      .reduce(
+        (prev, curr, index) => {
+          prev = [
+            ...prev,
+            curr,
+          ];
+
+          if (secondHalf[index]) {
+            prev = [
+              ...prev,
+              secondHalf[index],
+            ]
+          }
+
+          return prev;
+        },
+        [] as SectorStats[],
+      )
+  }
+
+  return stats;
 }
 
 const SLOT_DETAIL_SUBSCRIPTION = gql`
@@ -118,11 +156,8 @@ const SLOT_DETAIL_SUBSCRIPTION = gql`
                 time
             }
             sectorStats {
+                id
                 time {
-                    current
-                    record
-                }
-                speed {
                     current
                     record
                 }
@@ -154,10 +189,12 @@ interface Slot {
   isRefueling: boolean;
   distanceToLeader: DistanceToPlayer
   distanceToNext: DistanceToPlayer;
-  sectorStats: {
-    time: SectorStat;
-    speed: SectorStat;
-  }[];
+  sectorStats: SectorStats[];
+}
+
+interface SectorStats {
+  id: string;
+  time: SectorStat;
 }
 
 interface DistanceToPlayer {
