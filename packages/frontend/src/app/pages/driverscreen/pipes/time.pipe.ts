@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class TimePipe implements PipeTransform {
 
   transform(value: number): string {
-    if (!value) {
+    if (!value || value <= 0) {
       return '00:00.000';
     }
     const millis = (value % 1000);
