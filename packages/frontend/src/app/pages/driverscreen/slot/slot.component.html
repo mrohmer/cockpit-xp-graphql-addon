@@ -6,6 +6,8 @@
         {{slot.driver.name}} <ng-container *ngIf="slot.driver.car">- {{slot.driver.car}}</ng-container>
     </div>
 </div>
+<div class="headline-spacer"></div>
+
 <div class="content">
     <div class="details" *ngIf="slot$|async as slot">
         <app-cell class="cell--laps" [centered]="true">

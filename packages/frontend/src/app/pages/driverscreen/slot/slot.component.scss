@@ -90,11 +90,21 @@
 }
 
 .headline {
+  $height: 55px;
   display: flex;
   padding: 7.5px 55px 7.5px 7.5px;
   align-items: center;
   background: #101010;
-  height: 55px;
+  height: $height;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+
+  &-spacer {
+    height: $height;
+  }
 
   &__back {
     font-size: 40px;
