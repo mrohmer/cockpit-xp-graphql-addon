@@ -421,18 +421,42 @@ func (u *update) processStartZielEvent(str string) error {
 		Lap:  event.Data.Distance.Leader.Lap,
 	}
 
-	var last *int
+	var current *int
 	if event.Data.LapTime.Last != 0 {
-		last = &event.Data.LapTime.Last
+		current = &event.Data.LapTime.Last
 	}
 	var best *int
 	if event.Data.LapTime.Best != 0 {
 		best = &event.Data.LapTime.Best
 	}
+
+	last := slot.LapTime.Last
+
+	if slot.LapTime.Current != nil && *slot.LapTime.Current > 0 {
+		last = append(last, *slot.LapTime.Current)
+	}
+
+	sum := 0
+	amount := len(last)
+	for _, i := range last {
+		sum += i
+	}
+	if current != nil {
+		sum += *current
+		amount++
+	}
+
+	var average *float64
+	if amount > 0 {
+		tmp := float64(sum) / float64(amount)
+		average = &tmp
+	}
+
 	slot.LapTime = &model.LapTime{
-		Diff: &event.Data.LapTime.Diff,
-		Last: last,
-		Best: best,
+		Average: average,
+		Last:    last,
+		Current: current,
+		Best:    best,
 	}
 
 	u.addSlotUpdate(event.Data.SlotID, slot)

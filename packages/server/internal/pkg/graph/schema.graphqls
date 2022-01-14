@@ -43,8 +43,9 @@ type DistanceToPlayer {
   lap: Int!
 }
 type LapTime {
-  diff: Int
-  last: Int
+  average: Float
+  last: [Int!]
+  current: Int
   best: Int
 }
 type SectorStat {

@@ -21,9 +21,10 @@ type Driver struct {
 }
 
 type LapTime struct {
-	Diff *int `json:"diff"`
-	Last *int `json:"last"`
-	Best *int `json:"best"`
+	Average *float64 `json:"average"`
+	Last    []int    `json:"last"`
+	Current *int     `json:"current"`
+	Best    *int     `json:"best"`
 }
 
 type Penalty struct {

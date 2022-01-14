@@ -6,16 +6,18 @@
   grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
   grid-template-areas:
       "laps laps position position gaptoleader gaptoleader gaptonext gaptonext"
-      "lasttime lasttime lasttime lasttime besttime besttime besttime besttime"
+      "currenttime currenttime currenttime currenttime besttime besttime besttime besttime"
+      "fuel fuel fuel fuel averagetime averagetime averagetime averagetime"
       "fuel fuel fuel fuel sectors sectors sectors sectors"
-      "fuel fuel fuel fuel penalties penalties penalties penalties";
+      "penalties penalties penalties penalties penalties penalties penalties penalties";
 
   @media (max-width: 800px) {
     grid-template-areas:
     "laps laps laps laps laps position position position"
     "gaptoleader gaptoleader gaptoleader gaptoleader gaptonext gaptonext gaptonext gaptonext"
-    "lasttime lasttime lasttime lasttime lasttime lasttime lasttime lasttime"
+    "currenttime currenttime currenttime currenttime currenttime currenttime currenttime currenttime"
     "besttime besttime besttime besttime besttime besttime besttime besttime"
+    "averagetime averagetime averagetime averagetime averagetime averagetime averagetime averagetime"
     "fuel fuel fuel fuel sectors sectors sectors sectors"
     "penalties penalties penalties penalties penalties penalties penalties penalties";
   }
@@ -23,8 +25,9 @@
     grid-template-areas:
     "laps laps laps laps laps position position position"
     "gaptoleader gaptoleader gaptoleader gaptoleader gaptonext gaptonext gaptonext gaptonext"
-    "lasttime lasttime lasttime lasttime lasttime lasttime lasttime lasttime"
+    "currenttime currenttime currenttime currenttime currenttime currenttime currenttime currenttime"
     "besttime besttime besttime besttime besttime besttime besttime besttime"
+    "averagetime averagetime averagetime averagetime averagetime averagetime averagetime averagetime"
     "fuel fuel fuel fuel fuel fuel fuel fuel"
     "sectors sectors sectors sectors sectors sectors sectors sectors"
     "penalties penalties penalties penalties penalties penalties penalties penalties";
@@ -40,15 +43,19 @@
     grid-area: laps;
   }
 
-  &--lasttime {
-    grid-area: lasttime;
+  &--currenttime {
+    grid-area: currenttime;
   }
 
   &--besttime {
     grid-area: besttime;
   }
 
-  &--lasttime, &--besttime {
+  &--averagetime {
+    grid-area: averagetime;
+  }
+
+  &--currenttime, &--besttime, &--averagetime {
     ::ng-deep .cell {
       @media (max-width: 425px) {
         &-content__main {

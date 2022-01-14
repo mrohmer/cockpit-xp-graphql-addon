@@ -99,7 +99,8 @@ const SLOT_DETAIL_SUBSCRIPTION = gql`
             remainingLaps
             lapTime {
                 best
-                last
+                current
+                average
             }
             penalties {
                 status
@@ -141,7 +142,8 @@ interface Slot {
   remainingLaps: number;
   lapTime: {
     best: number;
-    last: number;
+    current: number;
+    average: number;
   };
   penalties: {
     status: string;

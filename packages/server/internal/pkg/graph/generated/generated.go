@@ -56,9 +56,10 @@ type ComplexityRoot struct {
 	}
 
 	LapTime struct {
-		Best func(childComplexity int) int
-		Diff func(childComplexity int) int
-		Last func(childComplexity int) int
+		Average func(childComplexity int) int
+		Best    func(childComplexity int) int
+		Current func(childComplexity int) int
+		Last    func(childComplexity int) int
 	}
 
 	Penalty struct {
@@ -214,6 +215,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Driver.Races(childComplexity), true
 
+	case "LapTime.average":
+		if e.complexity.LapTime.Average == nil {
+			break
+		}
+
+		return e.complexity.LapTime.Average(childComplexity), true
+
 	case "LapTime.best":
 		if e.complexity.LapTime.Best == nil {
 			break
@@ -221,12 +229,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.LapTime.Best(childComplexity), true
 
-	case "LapTime.diff":
-		if e.complexity.LapTime.Diff == nil {
+	case "LapTime.current":
+		if e.complexity.LapTime.Current == nil {
 			break
 		}
 
-		return e.complexity.LapTime.Diff(childComplexity), true
+		return e.complexity.LapTime.Current(childComplexity), true
 
 	case "LapTime.last":
 		if e.complexity.LapTime.Last == nil {
@@ -703,8 +711,9 @@ type DistanceToPlayer {
   lap: Int!
 }
 type LapTime {
-  diff: Int
-  last: Int
+  average: Float
+  last: [Int!]
+  current: Int
   best: Int
 }
 type SectorStat {
@@ -1101,7 +1110,7 @@ func (ec *executionContext) _Driver_races(ctx context.Context, field graphql.Col
 	return ec.marshalNRaceStats2ᚖrohmerᚗrocksᚋserverᚋinternalᚋpkgᚋgraphᚋmodelᚐRaceStats(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LapTime_diff(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
+func (ec *executionContext) _LapTime_average(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1119,7 +1128,7 @@ func (ec *executionContext) _LapTime_diff(ctx context.Context, field graphql.Col
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Diff, nil
+		return obj.Average, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1128,9 +1137,9 @@ func (ec *executionContext) _LapTime_diff(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(*float64)
 	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _LapTime_last(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
@@ -1152,6 +1161,38 @@ func (ec *executionContext) _LapTime_last(ctx context.Context, field graphql.Col
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Last, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]int)
+	fc.Result = res
+	return ec.marshalOInt2ᚕintᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _LapTime_current(ctx context.Context, field graphql.CollectedField, obj *model.LapTime) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "LapTime",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Current, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4164,10 +4205,12 @@ func (ec *executionContext) _LapTime(ctx context.Context, sel ast.SelectionSet, 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("LapTime")
-		case "diff":
-			out.Values[i] = ec._LapTime_diff(ctx, field, obj)
+		case "average":
+			out.Values[i] = ec._LapTime_average(ctx, field, obj)
 		case "last":
 			out.Values[i] = ec._LapTime_last(ctx, field, obj)
+		case "current":
+			out.Values[i] = ec._LapTime_current(ctx, field, obj)
 		case "best":
 			out.Values[i] = ec._LapTime_best(ctx, field, obj)
 		default:
@@ -5337,6 +5380,63 @@ func (ec *executionContext) marshalODriver2ᚖrohmerᚗrocksᚋserverᚋinternal
 		return graphql.Null
 	}
 	return ec._Driver(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v interface{}) (*float64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalFloat(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel ast.SelectionSet, v *float64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalFloat(*v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]int, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNInt2int(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOInt2ᚕintᚄ(ctx context.Context, sel ast.SelectionSet, v []int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNInt2int(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {

@@ -36,13 +36,17 @@
                 star
             </span>
         </app-cell>
-        <app-cell class="cell--lasttime" color="blue" [centered]="true" [big]="true">
-            {{slot.lapTime.last|time}}
+        <app-cell class="cell--currenttime" color="blue" [centered]="true" [big]="true">
+            {{slot.lapTime.current|time}}
             <div appCellBadge>last</div>
         </app-cell>
         <app-cell class="cell--besttime" color="green" [centered]="true" [big]="true">
             {{slot.lapTime.best|time}}
             <div appCellBadge>Best</div>
+        </app-cell>
+        <app-cell class="cell--averagetime" color="yellow" [centered]="true" [big]="true">
+            {{slot.lapTime.average|time}}
+            <div appCellBadge>Avg</div>
         </app-cell>
         <app-cell class="cell--fuel" [centered]="true">
             <div *ngIf="slot.boxStops" appCellBadge>{{slot.boxStops}} Stops</div>
