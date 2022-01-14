@@ -1,4 +1,4 @@
-$paddingV: 10px;
+$paddingV: 5px;
 $paddingH: 20px;
 
 
@@ -11,7 +11,7 @@ $paddingH: 20px;
   overflow: hidden;
   &__main {
     font-size: 30px;
-    line-height: 40px;
+    line-height: 35px;
 
     ::ng-deep .material-icons {
       font-size: 80px;
@@ -20,7 +20,7 @@ $paddingH: 20px;
   }
   &__sub-line, &__super-line {
     font-size: 14px;
-    line-height: 25px;
+    line-height: 20px;
     opacity: 0.7;
     width: 100%;
 
@@ -64,7 +64,7 @@ $paddingH: 20px;
 :host {
   display: block;
   width: calc(100% - 10px);
-  min-height: 85px;
+  min-height: 70px;
   background: #303030;
   margin: 0 10px 10px 0;
   padding: $paddingV $paddingH;
@@ -88,7 +88,7 @@ $paddingH: 20px;
     &--big {
       .cell-content__main {
         font-size: 50px;
-        line-height: 80px;
+        line-height: 65px;
       }
     }
     &--blue {
