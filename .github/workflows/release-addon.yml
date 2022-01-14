@@ -25,7 +25,9 @@ jobs:
           task copy:root
       - name: Zip Assets
         run: |
-          zip "dist" -r --junk-paths dist/* dist/** dist/.* README.md
+          cp README.md dist
+          cd dist
+          zip "../dist" -r ./** ./.*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
