@@ -62,6 +62,17 @@ jobs:
       - uses: actions/checkout@v2
       - uses: arduino/setup-task@v1
       - uses: actions/download-artifact@v2
+        with:
+          name: server
+          path: packages/server/dist
+      - uses: actions/download-artifact@v2
+        with:
+          name: addon
+          path: packages/addon/dist
+      - uses: actions/download-artifact@v2
+        with:
+          name: frontend
+          path: packages/frontend/dist
       - name: Copy files to dist
         run: task copy:root
       - name: Zip Assets
