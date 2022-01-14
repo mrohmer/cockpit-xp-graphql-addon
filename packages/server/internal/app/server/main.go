@@ -70,8 +70,11 @@ func (s *Server) Start() error {
 		},
 	})
 
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	fs := http.FileServer(http.Dir("public"))
+
+	router.Handle("/playground", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
+	router.Handle("/*", fs)
 
 	log.Printf("connect to http://localhost:%d/ for GraphQL playground", s.port)
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(s.port), router))

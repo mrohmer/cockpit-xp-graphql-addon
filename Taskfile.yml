@@ -6,6 +6,7 @@ tasks:
   default:
     - task: build:go
     - task: bundle:cps
+    - task: prerender:frontend
     - task: copy:root
 
   generate:
@@ -55,6 +56,14 @@ tasks:
     cmds:
       - scripts/bundle
 
+  prerender:frontend:
+    generates:
+      - packages/frontend/dist
+    sources:
+      - packages/frontend/!dist
+    cmds:
+      - yarn frontend prerender
+
   copy:root:
     sources:
       - packages/*/dist/**
@@ -65,3 +74,4 @@ tasks:
       - cp -a packages/addon/dist/. dist/
       - cp -a packages/server/dist/. dist/
       - cp -a packages/server/default-config.yaml dist/.wc.yaml
+      - cp -a packages/frontend/dist/driverscreen/browser dist/public/

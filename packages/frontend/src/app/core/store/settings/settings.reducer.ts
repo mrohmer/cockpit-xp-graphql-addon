@@ -10,8 +10,8 @@ import {Settings} from '$core/models/settings';
 
 export const initialState: Settings = {
   server: {
-    host: 'localhost',
-    port: 8080,
+    host: (typeof window !== 'undefined' ? window.location.host : undefined) ?? 'localhost',
+    port: (typeof window !== 'undefined' ? parseInt(window.location.port) : undefined) ?? 8080,
   },
   wakeLock: true,
   autoFullscreen: true,
