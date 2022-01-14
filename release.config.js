@@ -1,3 +1,3 @@
 module.exports = {
-  branch: ['master'],
+  branch: ['master', { name: 'ci/semantic-release', prerelease: true }],
 };
