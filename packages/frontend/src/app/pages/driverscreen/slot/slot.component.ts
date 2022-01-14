@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {filter, pluck, startWith, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {filter, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import {combineLatest, defer, fromEvent, iif, merge, Observable, of, Subject} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {WakeLockService} from '$core/services/wake-lock.service';
@@ -30,7 +30,6 @@ export class SlotComponent implements OnInit, OnDestroy {
         }),
         of({data: {slot: null}})
       )),
-      tap(console.log),
       pluck('data'),
       pluck('slot'),
     );

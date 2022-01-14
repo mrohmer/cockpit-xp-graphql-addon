@@ -5,7 +5,7 @@ import {ApolloQueryResult, FetchResult, MutationOptions, QueryOptions, Subscript
 import {NEVER, Observable, of} from 'rxjs';
 import {State} from '@ngrx/store';
 import {ApplicationState} from '$core/models/state';
-import {distinctUntilChanged, map, pairwise, pluck, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
+import {distinctUntilChanged, map, pairwise, pluck, shareReplay, startWith, switchMap} from 'rxjs/operators';
 import {buildServerUrl} from '$core/utils/server-url.util';
 import {QueryRef} from 'apollo-angular/query-ref';
 import {createApolloLink, wsConnected$, wsError$} from '$core/utils/apollo-link.util';
@@ -19,7 +19,6 @@ export class DynamicUrlApolloService {
 
   private onUrlChange$ = this.state
     .pipe(
-      tap(data => console.log('on url change', data)),
       pluck('settings', 'server'),
       map(server => buildServerUrl(server)),
       startWith(''),
