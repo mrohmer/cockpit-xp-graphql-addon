@@ -44,14 +44,14 @@ export function localStorageSyncReducer(
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     CoreModule,
     HttpClientModule,
     StoreModule.forRoot(
       { settings: settingsReducer },
       {
-        metaReducers: [localStorageSyncReducer],
+        metaReducers: typeof window !== 'undefined' ? [localStorageSyncReducer] : [],
       }
     ),
   ],

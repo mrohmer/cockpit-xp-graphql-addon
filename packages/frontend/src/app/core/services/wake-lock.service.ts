@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {
   defer,
   fromEvent,
@@ -17,7 +17,7 @@ import {
   take,
   tap,
 } from 'rxjs/operators';
-import { DOCUMENT } from '@angular/common';
+import {DOCUMENT, isPlatformBrowser} from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -27,15 +27,18 @@ export class WakeLockService {
   private listener?: Subscription;
 
   private get isWakeLockSupported(): boolean {
-    return 'wakeLock' in navigator;
+    return isPlatformBrowser(this.platformId) && 'wakeLock' in navigator;
   }
   private get isKeepAwakeSupported(): boolean {
-    return 'keepAwake' in screen;
+    return isPlatformBrowser(this.platformId) && 'keepAwake' in screen;
   }
 
   isSupported = this.isWakeLockSupported || this.isKeepAwakeSupported;
 
-  constructor(@Inject(DOCUMENT) private document: any) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: any,
+  ) {}
 
   request(): Observable<void> {
     if (this.isWakeLockSupported) {

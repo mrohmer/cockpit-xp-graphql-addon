@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {Apollo, ApolloBase} from 'apollo-angular';
 import {EmptyObject, ExtraSubscriptionOptions, WatchQueryOptions} from 'apollo-angular/types';
 import {ApolloQueryResult, FetchResult, MutationOptions, QueryOptions, SubscriptionOptions} from '@apollo/client/core';
-import {Observable, of} from 'rxjs';
+import {NEVER, Observable, of} from 'rxjs';
 import {State} from '@ngrx/store';
 import {ApplicationState} from '$core/models/state';
 import {distinctUntilChanged, map, pairwise, pluck, shareReplay, startWith, switchMap, tap} from 'rxjs/operators';
@@ -10,6 +10,7 @@ import {buildServerUrl} from '$core/utils/server-url.util';
 import {QueryRef} from 'apollo-angular/query-ref';
 import {createApolloLink, wsConnected$, wsError$} from '$core/utils/apollo-link.util';
 import {HttpLink} from 'apollo-angular/http';
+import {isPlatformBrowser} from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -42,11 +43,15 @@ export class DynamicUrlApolloService {
     private state: State<ApplicationState>,
     private httpLink: HttpLink,
     private apollo: Apollo,
+    @Inject(PLATFORM_ID) private platformId: any,
   ) {
   }
 
 
   private execOnUrlChange<T>(project: (client: ApolloBase) => Observable<T>): Observable<T> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return NEVER;
+    }
     return this.onUrlChange$
       .pipe(
         switchMap((client) => project(client)),

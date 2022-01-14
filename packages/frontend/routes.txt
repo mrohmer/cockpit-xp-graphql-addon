@@ -1,0 +1,14 @@
+/
+/screen
+/screen/slot
+/screen/slot/1
+/screen/slot/2
+/screen/slot/3
+/screen/slot/4
+/screen/slot/5
+/screen/slot/6
+/screen/slot/7
+/screen/slot/8
+/legal/imprint
+/legal/data-protection
+/settings

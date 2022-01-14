@@ -18,15 +18,19 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '1.16.1'
+      - run: yarn install
       - name: Build project
         run: |
           task generate
           task build:go:windows
           task bundle:cps
+          task prerender:frontend
           task copy:root
       - name: Zip Assets
         run: |
-          zip "dist" --junk-paths dist/* dist/.* README.md
+          cp README.md dist
+          cd dist
+          zip "../dist" -r ./** ./.wc.yaml
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
