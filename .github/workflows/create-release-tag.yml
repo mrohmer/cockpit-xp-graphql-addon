@@ -13,3 +13,12 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branches: |
+            [
+              'master',
+              {
+                name: 'ci/semantic-release', 
+                prerelease: true
+              }
+            ]
