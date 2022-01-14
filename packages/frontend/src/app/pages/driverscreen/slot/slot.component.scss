@@ -5,18 +5,29 @@
   justify-content: space-between;
   grid-template-columns: 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5% 12.5%;
   grid-template-areas:
-    "laps laps position position gaptoleader gaptoleader gaptoleader gaptoleader"
+      "laps laps position position gaptoleader gaptoleader gaptonext gaptonext"
+      "lasttime lasttime lasttime lasttime besttime besttime besttime besttime"
+      "fuel fuel fuel fuel sectors sectors sectors sectors"
+      "fuel fuel fuel fuel penalties penalties penalties penalties";
+
+  @media (max-width: 800px) {
+    grid-template-areas:
+    "laps laps laps laps laps position position position"
+    "gaptoleader gaptoleader gaptoleader gaptoleader gaptonext gaptonext gaptonext gaptonext"
     "lasttime lasttime lasttime lasttime lasttime lasttime lasttime lasttime"
     "besttime besttime besttime besttime besttime besttime besttime besttime"
     "fuel fuel fuel fuel sectors sectors sectors sectors"
     "penalties penalties penalties penalties penalties penalties penalties penalties";
-
-  @media (orientation: landscape) {
+  }
+  @media (max-width: 600px) {
     grid-template-areas:
-    "laps laps position position gaptoleader gaptoleader gaptonext gaptonext"
-    "lasttime lasttime lasttime lasttime besttime besttime besttime besttime besttime"
-    "timelabel currenttime besttime sectors sectors sectors sectors"
-    "fuel fuel . . penalties penalties penalties penalties";
+    "laps laps laps laps laps position position position"
+    "gaptoleader gaptoleader gaptoleader gaptoleader gaptonext gaptonext gaptonext gaptonext"
+    "lasttime lasttime lasttime lasttime lasttime lasttime lasttime lasttime"
+    "besttime besttime besttime besttime besttime besttime besttime besttime"
+    "fuel fuel fuel fuel fuel fuel fuel fuel"
+    "sectors sectors sectors sectors sectors sectors sectors sectors"
+    "penalties penalties penalties penalties penalties penalties penalties penalties";
   }
 }
 
@@ -37,6 +48,26 @@
     grid-area: besttime;
   }
 
+  &--lasttime, &--besttime {
+    ::ng-deep .cell {
+      @media (max-width: 425px) {
+        &-content__main {
+          font-size: 40px !important;
+        }
+
+        &__badge {
+          font-size: 17px !important;
+        }
+      }
+      @media (max-width: 350px) {
+        &-content__main {
+          align-self: start;
+          padding-left: 10px;
+        }
+      }
+    }
+  }
+
   &--fuel {
     grid-area: fuel;
   }
@@ -55,10 +86,6 @@
 
   &--gaptonext {
     grid-area: gaptonext;
-    display: none;
-    @media (orientation: landscape) {
-      display: block;
-    }
   }
 }
 
