@@ -10,7 +10,7 @@ import {Settings} from '$core/models/settings';
 
 export const initialState: Settings = {
   server: {
-    host: (typeof window !== 'undefined' ? window.location.host : undefined) ?? 'localhost',
+    host: (typeof window !== 'undefined' ? window.location.host.split(':')[0] : undefined) ?? 'localhost',
     port: (typeof window !== 'undefined' ? parseInt(window.location.port) : undefined) ?? 8080,
   },
   wakeLock: true,
