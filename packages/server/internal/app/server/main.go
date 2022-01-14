@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/rs/cors"
 	"log"
+	"net"
 	"net/http"
 	"rohmer.rocks/server/internal/pkg/graph"
 	"rohmer.rocks/server/internal/pkg/graph/generated"
@@ -76,8 +77,20 @@ func (s *Server) Start() error {
 	router.Handle("/query", srv)
 	router.Handle("/*", fs)
 
-	log.Printf("connect to http://localhost:%d/ for GraphQL playground", s.port)
+	log.Printf("go to http://localhost:%d/playground for GraphQL playground\n\nopen http://%s:%d on any device in your network to view the ui\n\n", s.port, getOutboundIP(), s.port)
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(s.port), router))
 
 	return nil
+}
+
+func getOutboundIP() net.IP {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddr.IP
 }
