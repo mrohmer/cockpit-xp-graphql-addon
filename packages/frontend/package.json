@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/platform-server": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@angular/service-worker": "~12.2.0",
     "@apollo/client": "^3.5.6",
     "@ngrx/store": "^13.0.2",
     "@nguniversal/express-engine": "12.1.3",

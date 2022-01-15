@@ -263,6 +263,13 @@
   dependencies:
     tslib "^2.2.0"
 
+"@angular/service-worker@~12.2.0":
+  version "12.2.15"
+  resolved "https://registry.npmjs.org/@angular/service-worker/-/service-worker-12.2.15.tgz#bda2c1f8be1969b0bbab660b9024c06aa7ec8102"
+  integrity sha512-36O2Yu/QYpphite++kcgcAkLrEWugMxm/FEHjMo1kufuaMLim8Lr5nmG1e3GQJaYlykQcmFT3sPyvKio8LSWaQ==
+  dependencies:
+    tslib "^2.2.0"
+
 "@apollo/client@^3.5.6":
   version "3.5.6"
   resolved "https://registry.npmjs.org/@apollo/client/-/client-3.5.6.tgz#911929df073280689efd98e5603047b79e0c39a2"
@@ -4530,14 +4537,9 @@ flatten@^1.0.2:
   resolved "https://registry.npmjs.org/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
-follow-redirects@^1.0.0:
+follow-redirects@^1.0.0, follow-redirects@^1.14.0:
   version "1.14.7"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
-  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
-
-follow-redirects@^1.14.0:
-  version "1.14.7"
-  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
   integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
 
 for-in@^1.0.2:

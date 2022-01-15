@@ -17,6 +17,8 @@ import {ApplicationState} from '$core/models/state';
 import {createApolloLink} from '$core/utils/apollo-link.util';
 import {InMemoryCache} from '@apollo/client/core';
 import {HttpClientModule} from '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 export function localStorageSyncReducer(
   reducer: ActionReducer<any>
@@ -54,6 +56,12 @@ export function localStorageSyncReducer(
         metaReducers: typeof window !== 'undefined' ? [localStorageSyncReducer] : [],
       }
     ),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [
     {
