@@ -6,6 +6,8 @@ var
   Slot: Integer;
   Data, Distance, LapTime, Records: String;
 
+{%%FUNCTION.StringReplace%%}
+{%%FUNCTION.FloatToString%%}
 {%%PROCEDURE.WriteToFile%%}
 
 begin
@@ -16,7 +18,7 @@ begin
   Records:='{"fastestTime"}';
   LapTime:='{"diff": '+IntToStr(Cockpit.DiffLetzteRunde)+', "last": '+IntToStr(Cockpit.Rundenzeit)+', "best": '+IntToStr(Cockpit.SchnellsteRunde)+'}';
   Distance:='{"leader": {"time": '+IntToStr(Cockpit.AbstandZeitFuehrenden)+', "lap": '+IntToStr(Cockpit.AbstandRundeFuehrenden)+'}, "next": {"time": '+IntToStr(Cockpit.AbstandZeitVordermann)+', "lap": '+IntToStr(Cockpit.AbstandRundeVordermann)+'}}';
-  Data:='{"slot": "'+IntToStr(Cockpit.SlotID)+'", "distance": '+Distance+', "lapTime": '+LapTime+', "lap": '+IntToStr(Cockpit.Runde)+', "remainingLaps": '+IntToStr(Cockpit.RestRunde)+', "fuel": '+FloatToStr(Cockpit.TankStand)+'}';
+  Data:='{"slot": "'+IntToStr(Cockpit.SlotID)+'", "distance": '+Distance+', "lapTime": '+LapTime+', "lap": '+IntToStr(Cockpit.Runde)+', "remainingLaps": '+IntToStr(Cockpit.RestRunde)+', "fuel": '+FloatToString(Cockpit.TankStand)+'}';
   WriteToFile('{"event": "StartZiel", "data": '+Data+'}');
 
 end.

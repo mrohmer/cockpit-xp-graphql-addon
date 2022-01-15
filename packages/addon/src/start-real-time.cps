@@ -6,6 +6,8 @@ var
   trackStr, tickStr, lastTickStr, positionStr, lastPositionStr, fuelStr, lastFuelStr: String;
 
 
+{%%FUNCTION.StringReplace%%}
+{%%FUNCTION.FloatToString%%}
 {%%FUNCTION.FuelJson%%}
 {%%FUNCTION.PositionJson%%}
 {%%PROCEDURE.WriteToFile%%}
@@ -24,7 +26,7 @@ begin
     Cockpit.Slot := i;
     if Cockpit.FahrerName <> '' then
     begin
-      WriteToFile('{"event": "RegisterDriver", "data": {"slot": "' + IntToStr(Cockpit.SlotID) + '", "name": "'+Cockpit.FahrerName+'", "car": "'+Cockpit.FahrzeugName+'", "position": '+IntToStr(Cockpit.Position)+', "fuel": '+FloatToStr(Cockpit.TankStand)+', "races": {"completed": '+IntToStr(Cockpit.AnzahlRennen)+', "won": '+IntToStr(Cockpit.AnzahlSiege)+'}}}');
+      WriteToFile('{"event": "RegisterDriver", "data": {"slot": "' + IntToStr(Cockpit.SlotID) + '", "name": "'+Cockpit.FahrerName+'", "car": "'+Cockpit.FahrzeugName+'", "position": '+IntToStr(Cockpit.Position)+', "fuel": '+FloatToString(Cockpit.TankStand)+', "races": {"completed": '+IntToStr(Cockpit.AnzahlRennen)+', "won": '+IntToStr(Cockpit.AnzahlSiege)+'}}}');
     end;
   end;
 
