@@ -81,6 +81,10 @@ func (u *update) getHandler(eventType string) (func(str string) error, error) {
 		return u.processStartRealTimeEvent, nil
 	case "FuelChanged":
 		return u.processFuelChangedEvent, nil
+	case "FuelingChanged":
+		return u.processFuelingChangedEvent, nil
+	case "StopsChanged":
+		return u.processStopsChangedEvent, nil
 	case "PositionsChanged":
 		return u.processPositionsChangedEvent, nil
 	case "RegisterDriver":
@@ -89,10 +93,6 @@ func (u *update) getHandler(eventType string) (func(str string) error, error) {
 		return u.processTickEvent, nil
 	case "StartZiel":
 		return u.processStartZielEvent, nil
-	case "TankenEinfahrt":
-		return u.processTankenEinfahrtEvent, nil
-	case "TankenAusfahrt":
-		return u.processTankenAusfahrtEvent, nil
 	case "Topspeed-Stopp":
 		return u.processTopSpeedStoppEvent, nil
 	}
@@ -298,6 +298,64 @@ func (u *update) processFuelChangedEvent(str string) error {
 	u.updateSlots = u.r.SetSlots(slots)
 	return nil
 }
+func (u *update) processFuelingChangedEvent(str string) error {
+	var event fuelingChangedEvent
+	err := json.Unmarshal([]byte(str), &event)
+
+	if err != nil {
+		return err
+	}
+
+	slots := u.r.Slots()
+	if slots == nil {
+		return nil
+	}
+
+	changed := false
+	for id, slot := range slots {
+		isRefueling := arrayIncludesString(event.Data, id)
+		if isRefueling != slot.IsRefueling {
+			slot.IsRefueling = isRefueling
+			slots[id] = slot
+			changed = true
+		}
+	}
+
+	if changed {
+		u.updateSlots = u.r.SetSlots(slots)
+	}
+
+	return nil
+}
+func (u *update) processStopsChangedEvent(str string) error {
+	var event stopsChangedEvent
+	err := json.Unmarshal([]byte(str), &event)
+
+	if err != nil {
+		return err
+	}
+
+	slots := u.r.Slots()
+	if slots == nil {
+		return nil
+	}
+
+	changed := false
+	for id, stops := range event.Data {
+		slot := slots[id]
+		if slot.BoxStops != stops {
+			slot.BoxStops = stops
+			slots[id] = slot
+			changed = true
+		}
+	}
+
+	if changed {
+		u.updateSlots = u.r.SetSlots(slots)
+	}
+
+	return nil
+}
 func (u *update) processPositionsChangedEvent(str string) error {
 	var event positionsChangedEvent
 	err := json.Unmarshal([]byte(str), &event)
@@ -462,44 +520,6 @@ func (u *update) processStartZielEvent(str string) error {
 	u.addSlotUpdate(event.Data.SlotID, slot)
 	return nil
 }
-func (u *update) processTankenEinfahrtEvent(str string) error {
-	var event tankenEinfahrtEvent
-	err := json.Unmarshal([]byte(str), &event)
-
-	if err != nil {
-		return err
-	}
-
-	slot := u.r.Slot(event.Data.SlotID)
-	if slot == nil {
-		return nil
-	}
-
-	slot.IsRefueling = event.Data.Active
-	slot.BoxStops = event.Data.Stops
-
-	u.addSlotUpdate(event.Data.SlotID, slot)
-	return nil
-}
-func (u *update) processTankenAusfahrtEvent(str string) error {
-	var event tankenAusfahrtEvent
-	err := json.Unmarshal([]byte(str), &event)
-
-	if err != nil {
-		return err
-	}
-
-	slot := u.r.Slot(event.Data.SlotID)
-	if slot == nil {
-		return nil
-	}
-
-	slot.IsRefueling = event.Data.Active
-	slot.BoxStops = event.Data.Stops
-
-	u.addSlotUpdate(event.Data.SlotID, slot)
-	return nil
-}
 func (u *update) processTickEvent(str string) error {
 	var event tickEvent
 	err := json.Unmarshal([]byte(str), &event)
@@ -597,4 +617,13 @@ func (u *update) commit() {
 		u.updateSlots()
 		u.updateSlots = nil
 	}
+}
+
+func arrayIncludesString(arr []string, str string) bool {
+	for _, s := range arr {
+		if s == str {
+			return true
+		}
+	}
+	return false
 }

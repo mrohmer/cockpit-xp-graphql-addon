@@ -53,6 +53,16 @@ type fuelChangedEvent struct {
 
 	Data map[string]float64 `json:"data"`
 }
+type fuelingChangedEvent struct {
+	eventTypeOnly
+
+	Data []string `json:"data"`
+}
+type stopsChangedEvent struct {
+	eventTypeOnly
+
+	Data map[string]int `json:"data"`
+}
 type positionsChangedEvent struct {
 	eventTypeOnly
 
@@ -121,24 +131,6 @@ type startZielEvent struct {
 		Lap           int     `json:"lap"`
 		RemainingLaps int     `json:"remainingLaps"`
 		Fuel          float64 `json:"fuel"`
-	} `json:"data"`
-}
-type tankenEinfahrtEvent struct {
-	eventTypeOnly
-
-	Data struct {
-		slotted
-		Active bool `json:"active"`
-		Stops  int  `json:"stops"`
-	} `json:"data"`
-}
-type tankenAusfahrtEvent struct {
-	eventTypeOnly
-
-	Data struct {
-		slotted
-		Active bool `json:"active"`
-		Stops  int  `json:"stops"`
 	} `json:"data"`
 }
 type topspeedStoppEvent struct {

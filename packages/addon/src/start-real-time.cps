@@ -3,12 +3,14 @@
 { Parameter: Keine }
 var
   i: Integer;
-  trackStr, tickStr, lastTickStr, positionStr, lastPositionStr, fuelStr, lastFuelStr: String;
+  trackStr, tickStr, lastTickStr, positionStr, lastPositionStr, fuelStr, lastFuelStr, fuelingStr, lastFuelingStr, stopsStr, lastStopsStr: String;
 
 
 {%%FUNCTION.StringReplace%%}
 {%%FUNCTION.FloatToString%%}
 {%%FUNCTION.FuelJson%%}
+{%%FUNCTION.FuelingJson%%}
+{%%FUNCTION.StopsJson%%}
 {%%FUNCTION.PositionJson%%}
 {%%PROCEDURE.WriteToFile%%}
 {%%PROCEDURE.ClearFile%%}
@@ -44,7 +46,6 @@ begin
       lastTickStr := tickStr;
     end;
 
-    // todo output tick event (fuel, position...)
     positionStr := '{"event": "PositionsChanged", "data": '+PositionJson()+'}';
     if positionStr <> lastPositionStr then
     begin
@@ -52,13 +53,27 @@ begin
       lastPositionStr := positionStr;
     end;
 
-    // todo output tick event (fuel, position...)
     fuelStr := '{"event": "FuelChanged", "data": '+FuelJson()+'}';
     if fuelStr <> lastFuelStr then
     begin
       WriteToFile(fuelStr);
       lastFuelStr := fuelStr;
     end;
+
+    fuelingStr := '{"event": "FuelingChanged", "data": '+FuelingJson()+'}';
+    if fuelingStr <> lastFuelingStr then
+    begin
+      WriteToFile(fuelingStr);
+      lastFuelingStr := fuelingStr;
+    end;
+
+    stopsStr := '{"event": "StopsChanged", "data": '+StopsJson()+'}';
+    if stopsStr <> lastStopsStr then
+    begin
+      WriteToFile(stopsStr);
+      lastStopsStr := stopsStr;
+    end;
+
     cpSleep(500);
   end;
 end.
