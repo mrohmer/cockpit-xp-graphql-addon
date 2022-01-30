@@ -1,7 +1,7 @@
 import {ServerSettings} from '$core/models/settings';
 
-export const buildServerUrl = (server: ServerSettings, schema: 'ws://' | 'http://' = 'http://') => {
+export const buildServerUrl = (server: ServerSettings) => {
   const port = server.port ? `:${server.port}` : '';
-  return `${schema}${server.host ?? 'localhost'}${(port) }/query`;
+  return `http://${server.host ?? 'localhost'}${(port) }/query`;
 }
 

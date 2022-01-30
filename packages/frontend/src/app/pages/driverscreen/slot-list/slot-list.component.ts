@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {gql} from 'apollo-angular';
 import {Observable} from 'rxjs';
-import {map, shareReplay} from 'rxjs/operators';
+import {map, shareReplay, switchMap} from 'rxjs/operators';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 
 @Component({
@@ -13,10 +13,12 @@ import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service
 export class SlotListComponent {
 
   slots$: Observable<SlotsResponse['slots']> = this.apollo
-    .subscribe<SlotsResponse>({
+    .watchQuery<SlotsResponse>({
       query: SLOTS_SUBSCRIPTION,
+      pollInterval: 1000,
     })
     .pipe(
+      this.apollo.valueChanges(),
       map(r => r.data?.slots ?? []),
       shareReplay(),
     )
@@ -29,7 +31,7 @@ export class SlotListComponent {
 }
 
 const SLOTS_SUBSCRIPTION = gql`
-    subscription Slots {
+    query Slots {
         slots {
             id
             driver {

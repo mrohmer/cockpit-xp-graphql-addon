@@ -2,13 +2,23 @@ import {Inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {Apollo, ApolloBase} from 'apollo-angular';
 import {EmptyObject, ExtraSubscriptionOptions, WatchQueryOptions} from 'apollo-angular/types';
 import {ApolloQueryResult, FetchResult, MutationOptions, QueryOptions, SubscriptionOptions} from '@apollo/client/core';
-import {NEVER, Observable, of} from 'rxjs';
+import {NEVER, Observable, of, OperatorFunction} from 'rxjs';
 import {State} from '@ngrx/store';
 import {ApplicationState} from '$core/models/state';
-import {distinctUntilChanged, map, pairwise, pluck, shareReplay, startWith, switchMap} from 'rxjs/operators';
+import {
+  delay,
+  distinctUntilChanged,
+  map,
+  pairwise,
+  pluck,
+  retryWhen,
+  shareReplay,
+  startWith,
+  switchMap
+} from 'rxjs/operators';
 import {buildServerUrl} from '$core/utils/server-url.util';
 import {QueryRef} from 'apollo-angular/query-ref';
-import {createApolloLink, wsConnected$, wsError$} from '$core/utils/apollo-link.util';
+import {createApolloLink} from '$core/utils/apollo-link.util';
 import {HttpLink} from 'apollo-angular/http';
 import {isPlatformBrowser} from '@angular/common';
 
@@ -57,22 +67,34 @@ export class DynamicUrlApolloService {
       )
   }
   watchQuery<TData, TVariables = EmptyObject>(options: WatchQueryOptions<TVariables, TData>): Observable<QueryRef<TData, TVariables>> {
-    return this.execOnUrlChange((client) => of(client.watchQuery(options)));
+    return this.execOnUrlChange((client) => of(client.watchQuery({
+      ...options,
+      errorPolicy: options?.errorPolicy ?? 'all',
+    })));
   }
   query<T, V = EmptyObject>(options: QueryOptions<V, T>): Observable<ApolloQueryResult<T>> {
-    return this.execOnUrlChange((client) => client.query(options));
+    return this.execOnUrlChange((client) => client.query({
+      ...options,
+      errorPolicy: options?.errorPolicy ?? 'all',
+    }));
   }
   mutate<T, V = EmptyObject>(options: MutationOptions<T, V>): Observable<FetchResult<T>> {
-    return this.execOnUrlChange((client) => client.mutate(options));
+    return this.execOnUrlChange((client) => client.mutate({
+      ...options,
+      errorPolicy: options?.errorPolicy ?? 'all',
+    }));
   }
   subscribe<T, V = EmptyObject>(options: SubscriptionOptions<V, T>, extra?: ExtraSubscriptionOptions): Observable<FetchResult<T>> {
-    return this.execOnUrlChange((client) => client.subscribe(options, extra));
+    return this.execOnUrlChange((client) => client.subscribe({
+      ...options,
+      errorPolicy: options?.errorPolicy ?? 'all',
+    }, extra));
   }
 
-  wsIsConnected() {
-    return wsConnected$;
-  }
-  wsHasError() {
-    return wsError$;
+  valueChanges<TData, TVariables = EmptyObject>(defaultData?: TData): OperatorFunction<QueryRef<TData, TVariables>|undefined|null, ApolloQueryResult<TData>> {
+    return source => source.pipe(
+      switchMap(query => query?.valueChanges ?? (defaultData ? of({data: defaultData} as ApolloQueryResult<TData>) : NEVER)),
+      retryWhen(errors => errors.pipe(delay(500 * (Math.random() + 1))))
+    );
   }
 }

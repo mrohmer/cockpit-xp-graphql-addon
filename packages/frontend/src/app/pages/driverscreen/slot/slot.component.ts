@@ -24,12 +24,14 @@ export class SlotComponent implements OnInit, OnDestroy {
       pluck('slot'),
       switchMap(slotId => iif(
         () => !!slotId,
-        this.apollo.subscribe<{ slot: Slot }>({
+        this.apollo.watchQuery<{ slot?: Slot }>({
           query: SLOT_DETAIL_SUBSCRIPTION,
           variables: {slotId},
+          pollInterval: 500,
         }),
-        of({data: {slot: null}})
+        of(null),
       )),
+      this.apollo.valueChanges<{ slot?: Slot }>({slot: undefined}),
       pluck('data'),
       pluck<unknown, Slot>('slot'),
       map(slot => !!slot ? ({
@@ -126,7 +128,7 @@ const prepareSectorStats = (stats: SectorStats[]): SectorStats[] => {
 }
 
 const SLOT_DETAIL_SUBSCRIPTION = gql`
-    subscription SlotPosition($slotId: ID!) {
+    query SlotPosition($slotId: ID!) {
         slot(id: $slotId) {
             position
             driver {
