@@ -13,7 +13,7 @@ begin
       begin
         str:=str+', ';
       end;
-      str:=str+'"'+IntToStr(Cockpit.SlotID)+'": '+FloatToStr(Cockpit.TankStand);
+      str:=str+'"'+IntToStr(Cockpit.SlotID)+'": '+FloatToString(Cockpit.TankStand);
     end;
   end;
 
