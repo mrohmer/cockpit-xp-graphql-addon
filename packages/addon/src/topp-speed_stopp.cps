@@ -4,7 +4,8 @@
              Cockpit.Station=<TopSpeed-Station> }
 
 var
-  Slot, Station, SpeedRekord, TimeRekord: Integer;
+  Slot, Station, TimeRekord: Integer;
+  SpeedRekord: Extended;
   SpeedStr, TimeStr: String;
 
 {%%FUNCTION.StringReplace%%}
@@ -19,17 +20,22 @@ begin
   Station := Cockpit.Station;
   Cockpit.Station := Station;
 
-  if cpGetFloatVar(IntToStr(Cockpit.SlotID) + '.sektorSpeedRekord') < Cockpit.TopSpeed then
+  SpeedRekord := cpGetFloatVar(IntToStr(Cockpit.SlotID) + '.' + IntToStr(Station) + '.sektorSpeedRekord');
+  TimeRekord := cpGetIntegerVar(IntToStr(Cockpit.SlotID) + '.' + IntToStr(Station) + '.sektorTimeRekord');
+
+  if SpeedRekord < Cockpit.TopSpeed then
   begin
-    cpSetFloatVar(IntToStr(Cockpit.SlotID) + '.sektorSpeedRekord', Cockpit.TopSpeed);
+    cpSetFloatVar(IntToStr(Cockpit.SlotID) + '.' + IntToStr(Station) + '.sektorSpeedRekord', Cockpit.TopSpeed);
+    SpeedRekord := Cockpit.TopSpeed;
   end;
-  if cpGetIntegerVar(IntToStr(Cockpit.SlotID) + '.sektorTimeRekord') < Cockpit.Sektorzeit then
+  if TimeRekord < Cockpit.Sektorzeit then
   begin
-    cpSetIntegerVar(IntToStr(Cockpit.SlotID) + '.sektorTimeRekord', Cockpit.Sektorzeit);
+    cpSetIntegerVar(IntToStr(Cockpit.SlotID) + '.' + IntToStr(Station) + '.sektorTimeRekord', Cockpit.Sektorzeit);
+    TimeRekord := Cockpit.Sektorzeit;
   end;
 
-  SpeedStr := '{"current": '+FloatToString(Cockpit.TopSpeed)+', "rekord": ' + FloatToStr(cpGetFloatVar(IntToStr(Cockpit.SlotID) + '.sektorSpeedRekord')) + '}';
-  TimeStr := '{"current": '+IntToStr(Cockpit.Sektorzeit)+', "rekord": ' + IntToStr(cpGetIntegerVar(IntToStr(Cockpit.SlotID) + '.sektorTimeRekord')) + '}';
+  SpeedStr := '{"current": '+FloatToString(Cockpit.TopSpeed)+', "rekord": ' + FloatToStr(SpeedRekord) + '}';
+  TimeStr := '{"current": '+IntToStr(Cockpit.Sektorzeit)+', "rekord": ' + IntToStr(TimeRekord) + '}';
   WriteToFile('{"event": "Topspeed-Stopp", "data": {"slot": "' + IntToStr(Cockpit.SlotID) + '", "station": '+IntToStr(Cockpit.Station)+', "speed": '+SpeedStr+', "time": '+TimeStr+'}}');
 
 end.
