@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, PLATFORM_ID} from '@angular/core';
 import {DynamicUrlApolloService} from '$core/services/dynamic-url-apollo.service';
 import {gql} from 'apollo-angular';
-import {filter, map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, pluck, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
 import {combineLatest, defer, fromEvent, iif, merge, Observable, of, Subject} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {WakeLockService} from '$core/services/wake-lock.service';
@@ -19,26 +19,38 @@ export class SlotComponent implements OnInit, OnDestroy {
 
   private destroyed$ = new Subject();
 
-  slot$: Observable<Slot> = this.activatedRoute.params
+  private data$ = this.activatedRoute.params
     .pipe(
       pluck('slot'),
       switchMap(slotId => iif(
         () => !!slotId,
-        this.apollo.watchQuery<{ slot?: Slot }>({
-          query: SLOT_DETAIL_SUBSCRIPTION,
+        this.apollo.watchQuery<{ slot?: Slot, race?: Race }>({
+          query: QUERY,
           variables: {slotId},
           pollInterval: 500,
         }),
         of(null),
       )),
-      this.apollo.valueChanges<{ slot?: Slot }>({slot: undefined}),
+      this.apollo.valueChanges<{ slot?: Slot, race?: Race }>({}),
       pluck('data'),
-      pluck<unknown, Slot>('slot'),
-      map(slot => !!slot ? ({
-        ...slot,
-        sectorStats: prepareSectorStats(slot.sectorStats)
-      }) : slot),
+      shareReplay(),
     );
+
+  slot$: Observable<Slot> = this.data$
+      .pipe(
+          pluck<unknown, Slot>('slot'),
+          map(slot => !!slot ? ({
+            ...slot,
+            sectorStats: prepareSectorStats(slot.sectorStats)
+          }) : slot),
+          shareReplay(),
+      )
+  raceMode$ = this.data$
+      .pipe(
+          pluck('race'),
+          map(race => race?.mode),
+          shareReplay(),
+        );
 
   constructor(
     private apollo: DynamicUrlApolloService,
@@ -127,7 +139,7 @@ const prepareSectorStats = (stats: SectorStats[]): SectorStats[] => {
   return stats;
 }
 
-const SLOT_DETAIL_SUBSCRIPTION = gql`
+const QUERY = gql`
     query SlotPosition($slotId: ID!) {
         slot(id: $slotId) {
             position
@@ -165,6 +177,10 @@ const SLOT_DETAIL_SUBSCRIPTION = gql`
                 }
             }
 
+        }
+        
+        race {
+            mode
         }
     }
 `
@@ -210,3 +226,6 @@ interface SectorStat {
 }
 
 
+interface Race {
+  mode: 'QUALIFYING'|'RACE'|'TRAINING';
+}

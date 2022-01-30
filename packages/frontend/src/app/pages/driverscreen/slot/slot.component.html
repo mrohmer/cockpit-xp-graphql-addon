@@ -23,24 +23,44 @@
             <span appCellSuperLine>Position</span>
             {{slot.position}}
         </app-cell>
-        <app-cell class="cell--gaptoleader" [centered]="true">
-            <span appCellSuperLine>Gap to Leader</span>
-            <ng-container *ngIf="slot.position !== 1">
-                {{slot.distanceToLeader?.lap ?? '🤷'}}
+        <ng-container [ngSwitch]="raceMode$|async">
+            <ng-container  *ngSwitchCase="'RACE'">
+                <app-cell class="cell--gaptoleader" [centered]="true">
+                    <span appCellSuperLine>Gap to Leader</span>
+                    <ng-container *ngIf="slot.position !== 1">
+                        {{slot.distanceToLeader?.lap ?? '🤷'}}
+                    </ng-container>
+                    <span *ngIf="slot.position === 1" class="material-icons" style="font-size: 30px; line-height: 40px; color: #fcc22d">
+                        star
+                    </span>
+                </app-cell>
+                <app-cell class="cell--gaptonext" [centered]="true">
+                    <span appCellSuperLine>Gap to Next</span>
+                    <ng-container *ngIf="slot.position !== 1">
+                        {{slot.distanceToNext?.lap ?? '🤷'}}
+                    </ng-container>
+                    <span *ngIf="slot.position === 1" class="material-icons" style="font-size: 30px; line-height: 40px; color: #fcc22d">
+                        star
+                    </span>
+                </app-cell>
             </ng-container>
-            <span *ngIf="slot.position === 1" class="material-icons" style="font-size: 30px; line-height: 40px; color: #fcc22d">
-                star
-            </span>
-        </app-cell>
-        <app-cell class="cell--gaptonext" [centered]="true">
-            <span appCellSuperLine>Gap to Next</span>
-            <ng-container *ngIf="slot.position !== 1">
-                {{slot.distanceToNext?.lap ?? '🤷'}}
+            <ng-container *ngSwitchCase="'QUALIFYING'">
+                <app-cell class="cell--gaptoleader" [centered]="true">
+                    <span appCellSuperLine>Modus</span>
+                    Qualifying
+                </app-cell>
+                <app-cell class="cell--gaptonext" [centered]="true">
+                </app-cell>
             </ng-container>
-            <span *ngIf="slot.position === 1" class="material-icons" style="font-size: 30px; line-height: 40px; color: #fcc22d">
-                star
-            </span>
-        </app-cell>
+            <ng-container *ngSwitchCase="'TRAINING'">
+                <app-cell class="cell--gaptoleader" [centered]="true">
+                    <span appCellSuperLine>Modus</span>
+                    Training
+                </app-cell>
+                <app-cell class="cell--gaptonext" [centered]="true">
+                </app-cell>
+            </ng-container>
+        </ng-container>
         <app-cell class="cell--currenttime" color="blue" [centered]="true" [big]="true">
             {{slot.lapTime.current|time}}
             <div appCellBadge>last</div>
@@ -59,7 +79,7 @@
             <span class="material-icons" [style.color]="slot.isRefueling ? '#3bbd3d' : null">local_gas_station</span>
             <span appCellSubLine [hasBackground]="true">{{slot.fuel.toFixed(0)}}%</span>
         </app-cell>
-        <app-cell class="cell--penalties" [centered]="true">
+        <app-cell *ngIf="((raceMode$)|async) !== 'TRAINING'" class="cell--penalties" [centered]="true">
             <div *ngFor="let penalty of slot.penalties">
                 <ng-container [ngSwitch]="penalty">
                     <ng-container *ngSwitchCase="'LAP_PUNISHMENT'">
