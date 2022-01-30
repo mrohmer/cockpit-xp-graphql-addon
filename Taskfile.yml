@@ -26,16 +26,19 @@ tasks:
     deps: [generate]
     cmds:
       - go build -o dist/{{.OUTPUT}} cmd/server/server.go
+      - go build -o dist/{{.OUTPUT}} cmd/update/update.go
     sources:
       - cmd/**
       - internal/**
     generates:
       - dist/server
+      - dist/update
   build:go:windows:
     dir: packages/server
     deps: [generate]
     cmds:
       - go build -o dist/server.exe cmd/server/server.go
+      - go build -o dist/update.exe cmd/update/update.go
     env:
       GOOS: "windows"
     sources:
@@ -43,6 +46,7 @@ tasks:
       - internal/**
     generates:
       - dist/server.exe
+      - dist/update.exe
 
   bundle:cps:
     dir: packages/addon
