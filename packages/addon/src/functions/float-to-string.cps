@@ -1,4 +1,4 @@
-function FlaotToString(Value: Boolean):String;
+function FloatToString(Value: Extended):String;
 begin
   Result:=StringReplace(FloatToStr(Value), ',', '.')
 end;
