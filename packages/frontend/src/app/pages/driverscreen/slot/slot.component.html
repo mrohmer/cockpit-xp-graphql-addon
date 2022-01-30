@@ -12,7 +12,12 @@
     <div class="details" *ngIf="slot$|async as slot">
         <app-cell class="cell--laps" [centered]="true">
             <span appCellSuperLine>Laps</span>
-            {{slot.lap}} / {{slot.lap + slot.remainingLaps}}
+            <ng-container *ngIf="slot.remainingLaps >= 0">
+                {{slot.lap}} / {{slot.lap + slot.remainingLaps}}
+            </ng-container>
+            <ng-container *ngIf="slot.remainingLaps < 0">
+                {{slot.lap}}
+            </ng-container>
         </app-cell>
         <app-cell class="cell--position" [centered]="true">
             <span appCellSuperLine>Position</span>
