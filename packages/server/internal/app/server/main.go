@@ -52,7 +52,7 @@ func (s *Server) GetStartable() (func() func(), error) {
 		router := chi.NewRouter()
 
 		router.Use(cors.New(cors.Options{
-			Debug:          startableServer.debug || true,
+			Debug:          startableServer.debug,
 			AllowedHeaders: []string{"*"},
 		}).Handler)
 
