@@ -73,7 +73,7 @@
             <div appCellBadge>Avg</div>
         </app-cell>
         <app-cell class="cell--fuel" [centered]="true">
-            <div *ngIf="slot.boxStops" appCellBadge>{{slot.boxStops}} Stops</div>
+            <div *ngIf="slot.boxStops" appCellBadge>{{slot.boxStops}} Stop{{slot.boxStops === 1 ? '' : 's'}}</div>
             <div [appCellPercentage]="slot.fuel" [warning]="slot.fuel <= 20"></div>
             <span class="material-icons" [style.color]="slot.isRefueling ? '#3bbd3d' : null">local_gas_station</span>
             <span appCellSubLine [hasBackground]="true">{{slot.fuel.toFixed(0)}}%</span>
