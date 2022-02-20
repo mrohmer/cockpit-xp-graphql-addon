@@ -110,9 +110,11 @@ func copyDirToBackup() error {
 				}
 			}
 		} else {
-			err = fs.MoveFile(file.Name(), fmt.Sprintf("backup/%s", file.Name()))
-			if err != nil {
-				return err
+			if file.Name() != ".wc.yml" && file.Name() != "events.txt" {
+				err = fs.MoveFile(file.Name(), fmt.Sprintf("backup/%s", file.Name()))
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
@@ -138,9 +140,11 @@ func moveNewFilesToCorrectLocation() error {
 				}
 			}
 		} else {
-			err = fs.MoveFile(fmt.Sprintf("tmp/%s", file.Name()), file.Name())
-			if err != nil {
-				return err
+			if file.Name() != ".wc.yml" && file.Name() != "events.txt" {
+				err = fs.MoveFile(fmt.Sprintf("tmp/%s", file.Name()), file.Name())
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
