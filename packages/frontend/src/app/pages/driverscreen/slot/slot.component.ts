@@ -209,6 +209,8 @@ interface Slot {
   distanceToLeader: DistanceToPlayer
   distanceToNext: DistanceToPlayer;
   sectorStats: SectorStats[];
+  speedValue: number;
+  breakValue: number;
 }
 
 interface SectorStats {
