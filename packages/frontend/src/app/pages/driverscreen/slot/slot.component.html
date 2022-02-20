@@ -80,7 +80,7 @@
         </app-cell>
         <app-cell *ngIf="((raceMode$)|async) !== 'TRAINING'" class="cell--penalties" [centered]="true">
             <div *ngFor="let penalty of slot.penalties">
-                <ng-container [ngSwitch]="penalty">
+                <ng-container [ngSwitch]="penalty.type">
                     <ng-container *ngSwitchCase="'LAP_PUNISHMENT'">
                         Rundenstrafe
                     </ng-container>
