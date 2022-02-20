@@ -112,4 +112,12 @@
                 </div>
             </div>
         </app-cell>
+        <app-cell class="cell--speed-value" [centered]="true">
+            <span appCellSuperLine>Geschwindigkeit</span>
+            {{slot.speedValue}}
+        </app-cell>
+        <app-cell class="cell--break-value" [centered]="true">
+            <span appCellSuperLine>Bremse</span>
+            {{slot.breakValue}}
+        </app-cell>
 </div>

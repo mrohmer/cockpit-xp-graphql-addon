@@ -80,6 +80,8 @@ type Slot struct {
 	SectorStats      []*SectorStats    `json:"sectorStats"`
 	LapRecord        *int              `json:"lapRecord"`
 	Position         int               `json:"position"`
+	SpeedValue       *int              `json:"speedValue"`
+	BreakValue       *int              `json:"breakValue"`
 }
 
 type Track struct {

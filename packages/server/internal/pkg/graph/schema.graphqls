@@ -73,6 +73,8 @@ type Slot {
   sectorStats: [SectorStats!]
   lapRecord: Int
   position: Int!
+  speedValue: Int
+  breakValue: Int
 }
 
 type Record {

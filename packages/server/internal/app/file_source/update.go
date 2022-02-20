@@ -85,6 +85,8 @@ func (u *update) getHandler(eventType string) (func(str string) error, error) {
 		return u.processFuelingChangedEvent, nil
 	case "StopsChanged":
 		return u.processStopsChangedEvent, nil
+	case "SpeedValueChanged":
+		return u.processSpeedValueChangedEvent, nil
 	case "PositionsChanged":
 		return u.processPositionsChangedEvent, nil
 	case "RegisterDriver":
@@ -518,6 +520,31 @@ func (u *update) processStartZielEvent(str string) error {
 	}
 
 	u.addSlotUpdate(event.Data.SlotID, slot)
+	return nil
+}
+func (u *update) processSpeedValueChangedEvent(str string) error {
+	var event speedValueChangedEvent
+	err := json.Unmarshal([]byte(str), &event)
+
+	if err != nil {
+		return err
+	}
+
+	slots := u.r.Slots()
+	if slots == nil {
+		return nil
+	}
+
+	for id, data := range event.Data {
+		slot, exists := slots[id]
+		if exists {
+			slot.SpeedValue = &data.Speed
+			slot.BreakValue = &data.Break
+			slots[id] = slot
+		}
+	}
+
+	u.updateSlots = u.r.SetSlots(slots)
 	return nil
 }
 func (u *update) processTickEvent(str string) error {

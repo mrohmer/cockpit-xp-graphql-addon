@@ -133,6 +133,14 @@ type startZielEvent struct {
 		Fuel          float64 `json:"fuel"`
 	} `json:"data"`
 }
+type speedValueChangedEvent struct {
+	eventTypeOnly
+
+	Data map[string]struct {
+		Speed int `json:"speed"`
+		Break int `json:"break"`
+	} `json:"data"`
+}
 type topspeedStoppEvent struct {
 	eventTypeOnly
 

@@ -110,6 +110,7 @@ type ComplexityRoot struct {
 
 	Slot struct {
 		BoxStops         func(childComplexity int) int
+		BreakValue       func(childComplexity int) int
 		DistanceToLeader func(childComplexity int) int
 		DistanceToNext   func(childComplexity int) int
 		Driver           func(childComplexity int) int
@@ -124,6 +125,7 @@ type ComplexityRoot struct {
 		RemainingLaps    func(childComplexity int) int
 		SectorStats      func(childComplexity int) int
 		Speed            func(childComplexity int) int
+		SpeedValue       func(childComplexity int) int
 	}
 
 	Subscription struct {
@@ -435,6 +437,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Slot.BoxStops(childComplexity), true
 
+	case "Slot.breakValue":
+		if e.complexity.Slot.BreakValue == nil {
+			break
+		}
+
+		return e.complexity.Slot.BreakValue(childComplexity), true
+
 	case "Slot.distanceToLeader":
 		if e.complexity.Slot.DistanceToLeader == nil {
 			break
@@ -532,6 +541,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Slot.Speed(childComplexity), true
+
+	case "Slot.speedValue":
+		if e.complexity.Slot.SpeedValue == nil {
+			break
+		}
+
+		return e.complexity.Slot.SpeedValue(childComplexity), true
 
 	case "Subscription.driver":
 		if e.complexity.Subscription.Driver == nil {
@@ -741,6 +757,8 @@ type Slot {
   sectorStats: [SectorStats!]
   lapRecord: Int
   position: Int!
+  speedValue: Int
+  breakValue: Int
 }
 
 type Record {
@@ -2658,6 +2676,70 @@ func (ec *executionContext) _Slot_position(ctx context.Context, field graphql.Co
 	res := resTmp.(int)
 	fc.Result = res
 	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Slot_speedValue(ctx context.Context, field graphql.CollectedField, obj *model.Slot) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Slot",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpeedValue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Slot_breakValue(ctx context.Context, field graphql.CollectedField, obj *model.Slot) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Slot",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BreakValue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Subscription_race(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
@@ -4588,6 +4670,10 @@ func (ec *executionContext) _Slot(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "speedValue":
+			out.Values[i] = ec._Slot_speedValue(ctx, field, obj)
+		case "breakValue":
+			out.Values[i] = ec._Slot_breakValue(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

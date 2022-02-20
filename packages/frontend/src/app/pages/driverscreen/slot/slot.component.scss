@@ -9,7 +9,8 @@
       "currenttime currenttime currenttime currenttime besttime besttime besttime besttime"
       "fuel fuel fuel fuel averagetime averagetime averagetime averagetime"
       "fuel fuel fuel fuel sectors sectors sectors sectors"
-      "penalties penalties penalties penalties penalties penalties penalties penalties";
+      "penalties penalties penalties penalties penalties penalties penalties penalties"
+      "speedvalue speedvalue speedvalue speedvalue breakvalue breakvalue breakvalue breakvalue";
 
   @media (max-width: 800px) {
     grid-template-areas:
@@ -19,7 +20,8 @@
     "besttime besttime besttime besttime besttime besttime besttime besttime"
     "averagetime averagetime averagetime averagetime averagetime averagetime averagetime averagetime"
     "fuel fuel fuel fuel sectors sectors sectors sectors"
-    "penalties penalties penalties penalties penalties penalties penalties penalties";
+    "penalties penalties penalties penalties penalties penalties penalties penalties"
+    "speedvalue speedvalue speedvalue speedvalue breakvalue breakvalue breakvalue breakvalue";
   }
   @media (max-width: 600px) {
     grid-template-areas:
@@ -30,7 +32,8 @@
     "averagetime averagetime averagetime averagetime averagetime averagetime averagetime averagetime"
     "fuel fuel fuel fuel fuel fuel fuel fuel"
     "sectors sectors sectors sectors sectors sectors sectors sectors"
-    "penalties penalties penalties penalties penalties penalties penalties penalties";
+    "penalties penalties penalties penalties penalties penalties penalties penalties"
+    "speedvalue speedvalue speedvalue speedvalue breakvalue breakvalue breakvalue breakvalue";
   }
 }
 
@@ -93,6 +96,12 @@
 
   &--gaptonext {
     grid-area: gaptonext;
+  }
+  &--speed-value {
+    grid-area: speedvalue;
+  }
+  &--break-value {
+    grid-area: breakvalue;
   }
 }
 

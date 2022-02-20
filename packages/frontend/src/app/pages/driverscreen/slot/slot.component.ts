@@ -176,7 +176,8 @@ const QUERY = gql`
                     record
                 }
             }
-
+            speedValue
+            breakValue
         }
         
         race {

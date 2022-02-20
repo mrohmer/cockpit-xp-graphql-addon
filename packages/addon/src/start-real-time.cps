@@ -12,6 +12,7 @@ var
 {%%FUNCTION.FuelingJson%%}
 {%%FUNCTION.StopsJson%%}
 {%%FUNCTION.PositionJson%%}
+{%%FUNCTION.SpeedValueJson%%}
 {%%PROCEDURE.WriteToFile%%}
 {%%PROCEDURE.WriteEventToFileWhenChanged%%}
 {%%PROCEDURE.ClearFile%%}
@@ -45,6 +46,7 @@ begin
     WriteEventToFileWhenChanged('FuelChanged', FuelJson());
     WriteEventToFileWhenChanged('FuelingChanged', FuelingJson());
     WriteEventToFileWhenChanged('StopsChanged', StopsJson());
+    WriteEventToFileWhenChanged('SpeedValueChanged', SpeedValueJson());
 
     cpSleep(500);
   end;
