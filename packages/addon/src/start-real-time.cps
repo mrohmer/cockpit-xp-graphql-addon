@@ -2,8 +2,8 @@
 { Event: StartRealTime }
 { Parameter: Keine }
 var
-  i: Integer;
-  trackStr: String;
+  i, slotId, stationId: Integer;
+  trackStr, sectorEventStr: String;
 
 
 {%%FUNCTION.StringReplace%%}
@@ -13,6 +13,7 @@ var
 {%%FUNCTION.StopsJson%%}
 {%%FUNCTION.PositionJson%%}
 {%%FUNCTION.SpeedValueJson%%}
+{%%FUNCTION.SectorJson%%}
 {%%PROCEDURE.WriteToFile%%}
 {%%PROCEDURE.WriteEventToFileWhenChanged%%}
 {%%PROCEDURE.ClearFile%%}
@@ -41,12 +42,24 @@ begin
       exit;
     end;
 
-    WriteEventToFileWhenChanged('Tick', '{"time": {"value": '+IntToStr(Cockpit.GesamtZeit)+', "inverted": '+IntToStr(Cockpit.RennzeitInvers)+'}}');
-    WriteEventToFileWhenChanged('PositionsChanged', PositionJson());
-    WriteEventToFileWhenChanged('FuelChanged', FuelJson());
-    WriteEventToFileWhenChanged('FuelingChanged', FuelingJson());
-    WriteEventToFileWhenChanged('StopsChanged', StopsJson());
-    WriteEventToFileWhenChanged('SpeedValueChanged', SpeedValueJson());
+    WriteEventToFileWhenChanged('Tick', 'Tick', '{"time": {"value": '+IntToStr(Cockpit.GesamtZeit)+', "inverted": '+IntToStr(Cockpit.RennzeitInvers)+'}}');
+    WriteEventToFileWhenChanged('PositionsChanged', 'PositionsChanged', PositionJson());
+    WriteEventToFileWhenChanged('FuelChanged', 'FuelChanged', FuelJson());
+    WriteEventToFileWhenChanged('FuelingChanged', 'FuelingChanged', FuelingJson());
+    WriteEventToFileWhenChanged('StopsChanged', 'StopsChanged', StopsJson());
+    WriteEventToFileWhenChanged('SpeedValueChanged', 'SpeedValueChanged', SpeedValueJson());
+
+    for slotId := 1 to cpCountOfSlots() do
+    begin
+      for stationId := 1 to 10 do
+      begin
+        sectorEventStr := SectorJson(slotId, stationId)
+        if sectorEventStr <> '' then
+        begin
+          WriteEventToFileWhenChanged('SectorTime.'+IntToStr(slotId)+'.'+IntToStr(stationId), 'SectorTime', sectorEventStr);
+        end;
+      end;
+    end;
 
     cpSleep(500);
   end;

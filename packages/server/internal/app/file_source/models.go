@@ -141,7 +141,7 @@ type speedValueChangedEvent struct {
 		Break int `json:"break"`
 	} `json:"data"`
 }
-type topspeedStoppEvent struct {
+type sectorTimeEvent struct {
 	eventTypeOnly
 
 	Data struct {

@@ -1,4 +1,4 @@
-procedure WriteEventToFileWhenChanged(key: string; value: string);
+procedure WriteEventToFileWhenChanged(key: string; eventName: string; value: string);
 var
   lastValue: String;
 begin
@@ -6,6 +6,6 @@ begin
   if value <> lastValue then
   begin
     cpSetStringVar('event.' + key, value);
-    WriteToFile('{"event": "' + key + '", "data": ' + value + '}');
+    WriteToFile('{"event": "' + eventName + '", "data": ' + value + '}');
   end;
 end;

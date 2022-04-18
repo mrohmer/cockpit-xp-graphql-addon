@@ -95,8 +95,8 @@ func (u *update) getHandler(eventType string) (func(str string) error, error) {
 		return u.processTickEvent, nil
 	case "StartZiel":
 		return u.processStartZielEvent, nil
-	case "Topspeed-Stopp":
-		return u.processTopSpeedStoppEvent, nil
+	case "SectorTime":
+		return u.processSectorTimeEvent, nil
 	}
 	return nil, fmt.Errorf("unknown event '%s'", eventType)
 }
@@ -559,8 +559,8 @@ func (u *update) processTickEvent(str string) error {
 
 	return nil
 }
-func (u *update) processTopSpeedStoppEvent(str string) error {
-	var event topspeedStoppEvent
+func (u *update) processSectorTimeEvent(str string) error {
+	var event sectorTimeEvent
 	err := json.Unmarshal([]byte(str), &event)
 
 	if err != nil {
